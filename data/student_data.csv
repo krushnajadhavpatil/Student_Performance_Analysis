@@ -1,0 +1,76 @@
+Student_ID,Name,Department,Semester,Subject,Attendance_Percentage,Internal_Marks,External_Marks,Backlog,Total_Marks,Status
+S001,Aarav Shah,ECE,3,Digital Electronics,92,18,65,0,83,Pass
+S001,Aarav Shah,ECE,3,Signals & Systems,85,16,58,0,74,Pass
+S001,Aarav Shah,ECE,3,Microprocessors,88,17,62,0,79,Pass
+S002,Priya Patil,ECE,3,Digital Electronics,45,8,22,1,30,Fail
+S002,Priya Patil,ECE,3,Signals & Systems,40,7,18,1,25,Fail
+S002,Priya Patil,ECE,3,Microprocessors,38,6,15,1,21,Fail
+S003,Rohit Jadhav,ECE,3,Digital Electronics,75,14,50,0,64,Pass
+S003,Rohit Jadhav,ECE,3,Signals & Systems,72,13,48,0,61,Pass
+S003,Rohit Jadhav,ECE,3,Microprocessors,78,15,52,0,67,Pass
+S004,Sneha Kulkarni,CSE,3,Digital Electronics,60,11,38,0,49,Pass
+S004,Sneha Kulkarni,CSE,3,Signals & Systems,55,10,33,0,43,Pass
+S004,Sneha Kulkarni,CSE,3,Microprocessors,58,11,36,0,47,Pass
+S005,Amit Deshmukh,CSE,3,Digital Electronics,30,5,12,1,17,Fail
+S005,Amit Deshmukh,CSE,3,Signals & Systems,28,4,10,1,14,Fail
+S005,Amit Deshmukh,CSE,3,Microprocessors,32,5,14,1,19,Fail
+S006,Kavya Nair,ME,3,Digital Electronics,80,15,55,0,70,Pass
+S006,Kavya Nair,ME,3,Signals & Systems,83,16,57,0,73,Pass
+S006,Kavya Nair,ME,3,Microprocessors,79,15,54,0,69,Pass
+S007,Vikram More,ME,3,Digital Electronics,50,9,28,1,37,Fail
+S007,Vikram More,ME,3,Signals & Systems,48,8,25,1,33,Fail
+S007,Vikram More,ME,3,Microprocessors,52,9,30,1,39,Fail
+S008,Pooja Sharma,ECE,3,Digital Electronics,95,19,72,0,91,Pass
+S008,Pooja Sharma,ECE,3,Signals & Systems,93,18,70,0,88,Pass
+S008,Pooja Sharma,ECE,3,Microprocessors,91,19,68,0,87,Pass
+S009,Nikhil Joshi,ECE,3,Digital Electronics,65,12,42,0,54,Pass
+S009,Nikhil Joshi,ECE,3,Signals & Systems,62,11,39,0,50,Pass
+S009,Nikhil Joshi,ECE,3,Microprocessors,68,12,44,0,56,Pass
+S010,Riya Mehta,CSE,3,Digital Electronics,42,7,20,1,27,Fail
+S010,Riya Mehta,CSE,3,Signals & Systems,38,6,18,1,24,Fail
+S010,Riya Mehta,CSE,3,Microprocessors,40,7,19,1,26,Fail
+S011,Arjun Tiwari,ECE,4,Digital Electronics,88,17,63,0,80,Pass
+S011,Arjun Tiwari,ECE,4,Signals & Systems,85,16,60,0,76,Pass
+S011,Arjun Tiwari,ECE,4,Microprocessors,90,18,66,0,84,Pass
+S012,Meera Iyer,ECE,4,Digital Electronics,55,10,34,0,44,Pass
+S012,Meera Iyer,ECE,4,Signals & Systems,52,9,31,1,40,Fail
+S012,Meera Iyer,ECE,4,Microprocessors,50,9,29,1,38,Fail
+S013,Suresh Rao,CSE,4,Digital Electronics,72,13,49,0,62,Pass
+S013,Suresh Rao,CSE,4,Signals & Systems,70,13,47,0,60,Pass
+S013,Suresh Rao,CSE,4,Microprocessors,75,14,51,0,65,Pass
+S014,Divya Patel,CSE,4,Digital Electronics,35,6,15,1,21,Fail
+S014,Divya Patel,CSE,4,Signals & Systems,30,5,12,1,17,Fail
+S014,Divya Patel,CSE,4,Microprocessors,33,5,14,1,19,Fail
+S015,Rahul Gupta,ME,4,Digital Electronics,82,16,57,0,73,Pass
+S015,Rahul Gupta,ME,4,Signals & Systems,78,15,54,0,69,Pass
+S015,Rahul Gupta,ME,4,Microprocessors,80,15,56,0,71,Pass
+S016,Ananya Singh,ME,4,Digital Electronics,47,8,24,1,32,Fail
+S016,Ananya Singh,ME,4,Signals & Systems,45,7,22,1,29,Fail
+S016,Ananya Singh,ME,4,Microprocessors,43,7,20,1,27,Fail
+S017,Kiran Jain,ECE,4,Digital Electronics,90,18,67,0,85,Pass
+S017,Kiran Jain,ECE,4,Signals & Systems,88,17,64,0,81,Pass
+S017,Kiran Jain,ECE,4,Microprocessors,92,18,69,0,87,Pass
+S018,Tanvi Bhatt,ECE,4,Digital Electronics,63,11,40,0,51,Pass
+S018,Tanvi Bhatt,ECE,4,Signals & Systems,60,10,37,0,47,Pass
+S018,Tanvi Bhatt,ECE,4,Microprocessors,65,12,42,0,54,Pass
+S019,Manish Verma,CSE,4,Digital Electronics,25,4,8,1,12,Fail
+S019,Manish Verma,CSE,4,Signals & Systems,22,3,6,1,9,Fail
+S019,Manish Verma,CSE,4,Microprocessors,28,4,10,1,14,Fail
+S020,Lakshmi Reddy,ME,4,Digital Electronics,77,14,53,0,67,Pass
+S020,Lakshmi Reddy,ME,4,Signals & Systems,75,14,51,0,65,Pass
+S020,Lakshmi Reddy,ME,4,Microprocessors,73,13,49,0,62,Pass
+S021,Siddharth Kumar,ECE,3,Digital Electronics,85,16,60,0,76,Pass
+S021,Siddharth Kumar,ECE,3,Signals & Systems,80,15,57,0,72,Pass
+S021,Siddharth Kumar,ECE,3,Microprocessors,83,16,59,0,75,Pass
+S022,Nisha Agarwal,CSE,3,Digital Electronics,57,10,35,0,45,Pass
+S022,Nisha Agarwal,CSE,3,Signals & Systems,53,9,32,0,41,Pass
+S022,Nisha Agarwal,CSE,3,Microprocessors,55,10,34,0,44,Pass
+S023,Deepak Yadav,ME,3,Digital Electronics,70,13,47,0,60,Pass
+S023,Deepak Yadav,ME,3,Signals & Systems,68,12,45,0,57,Pass
+S023,Deepak Yadav,ME,3,Microprocessors,72,13,48,0,61,Pass
+S024,Shweta Pandey,ECE,4,Digital Electronics,91,18,66,0,84,Pass
+S024,Shweta Pandey,ECE,4,Signals & Systems,89,17,63,0,80,Pass
+S024,Shweta Pandey,ECE,4,Microprocessors,93,19,70,0,89,Pass
+S025,Rajesh Mishra,CSE,4,Digital Electronics,44,7,21,1,28,Fail
+S025,Rajesh Mishra,CSE,4,Signals & Systems,40,6,18,1,24,Fail
+S025,Rajesh Mishra,CSE,4,Microprocessors,42,7,20,1,27,Fail
