@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
@@ -8,279 +8,204 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --bg:#0F1117;--bg2:#161B27;--bg3:#1E2535;--bg4:#252D3D;
-    --border:#2A3347;--border2:#334060;
-    --txt:#E8EDF5;--txt2:#8B97B5;--txt3:#5A6680;
-    --blue:#3B82F6;--blue2:#1D4ED8;--blue-light:#DBEAFE;
-    --green:#22C55E;--green2:#15803D;--green-light:#DCFCE7;
-    --red:#EF4444;--red2:#B91C1C;--red-light:#FEE2E2;
-    --amber:#F59E0B;--amber2:#B45309;--amber-light:#FEF3C7;
-    --teal:#14B8A6;--purple:#8B5CF6;
-    --font:'Sora',sans-serif;--mono:'JetBrains Mono',monospace;
-    --radius:10px;--radius-lg:14px;--radius-xl:18px;
-  }
-  html{scroll-behavior:smooth}
-  body{font-family:var(--font);background:var(--bg);color:var(--txt);min-height:100vh;font-size:14px;line-height:1.6}
+[data-theme="dark"]{
+  --bg:#0F1117;--bg2:#161B27;--bg3:#1E2535;--bg4:#252D3D;
+  --border:#2A3347;--border2:#334060;
+  --txt:#E8EDF5;--txt2:#8B97B5;--txt3:#5A6680;
+  --card-bg:#161B27;--nav-bg:rgba(15,17,23,0.92);
+  --input-bg:#1E2535;--input-border:#334060;
+  --modal-overlay:rgba(0,0,0,0.75);
+}
+[data-theme="light"]{
+  --bg:#F4F6FA;--bg2:#FFFFFF;--bg3:#F0F2F7;--bg4:#E8EBF3;
+  --border:#DDE1ED;--border2:#C5CCE0;
+  --txt:#1A1F2E;--txt2:#4A5568;--txt3:#8896B0;
+  --card-bg:#FFFFFF;--nav-bg:rgba(244,246,250,0.92);
+  --input-bg:#F0F2F7;--input-border:#C5CCE0;
+  --modal-overlay:rgba(0,0,0,0.45);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#3B82F6;--blue2:#1D4ED8;
+  --green:#22C55E;--green2:#15803D;
+  --red:#EF4444;--amber:#F59E0B;
+  --teal:#14B8A6;--purple:#8B5CF6;
+  --font:'Sora',sans-serif;--mono:'JetBrains Mono',monospace;
+  --radius:10px;--radius-lg:14px;--radius-xl:18px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--txt);min-height:100vh;font-size:14px;line-height:1.6;transition:background .25s,color .25s}
 
-  /* ── NAVBAR ── */
-  nav{
-    position:sticky;top:0;z-index:100;
-    background:rgba(15,17,23,0.88);
-    backdrop-filter:blur(14px);
-    border-bottom:1px solid var(--border);
-    padding:.75rem 2rem;
-    display:flex;align-items:center;justify-content:space-between;
-  }
-  .nav-brand{display:flex;align-items:center;gap:.75rem}
-  .nav-logo{
-    width:36px;height:36px;border-radius:8px;
-    background:linear-gradient(135deg,var(--blue),var(--purple));
-    display:flex;align-items:center;justify-content:center;
-    font-size:16px;color:#fff;font-weight:700
-  }
-  .nav-title{font-size:15px;font-weight:600;color:var(--txt)}
-  .nav-sub{font-size:11px;color:var(--txt2)}
-  .nav-actions{display:flex;align-items:center;gap:.75rem}
-  .upload-btn{
-    display:flex;align-items:center;gap:.5rem;
-    padding:.5rem 1rem;border-radius:var(--radius);
-    background:var(--blue);color:#fff;
-    font-size:13px;font-weight:500;cursor:pointer;
-    border:none;font-family:var(--font);transition:background .2s
-  }
-  .upload-btn:hover{background:var(--blue2)}
-  .upload-btn input{display:none}
-  .status-pill{
-    padding:.35rem .85rem;border-radius:99px;font-size:12px;font-weight:500;
-    background:var(--bg3);border:1px solid var(--border);color:var(--txt2)
-  }
-  .status-pill.loaded{color:var(--green);border-color:var(--green2);background:rgba(34,197,94,.1)}
+/* NAV */
+nav{position:sticky;top:0;z-index:200;background:var(--nav-bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.nav-brand{display:flex;align-items:center;gap:.75rem}
+.nav-logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:700;flex-shrink:0;}
+.nav-title{font-size:15px;font-weight:600;color:var(--txt)}
+.nav-sub{font-size:11px;color:var(--txt2)}
+.nav-actions{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.nav-search{display:flex;align-items:center;gap:.5rem;background:var(--input-bg);border:1px solid var(--input-border);border-radius:var(--radius);padding:.4rem .75rem;transition:border-color .2s;}
+.nav-search:focus-within{border-color:var(--blue)}
+.nav-search input{background:transparent;border:none;outline:none;color:var(--txt);font-family:var(--font);font-size:13px;width:180px;}
+.nav-search input::placeholder{color:var(--txt3)}
+.search-wrap{position:relative}
+.search-dropdown{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);overflow:hidden;z-index:300;min-width:300px;box-shadow:0 8px 24px rgba(0,0,0,.25);}
+.search-item{padding:.65rem 1rem;cursor:pointer;transition:background .12s;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.search-item:last-child{border-bottom:none}
+.search-item:hover{background:var(--bg3)}
+.search-item-left strong{font-size:13px;color:var(--txt);display:block}
+.search-item-left span{font-size:11px;color:var(--txt3)}
+.search-no{padding:.85rem 1rem;font-size:13px;color:var(--txt3);text-align:center}
+.btn{display:flex;align-items:center;gap:.4rem;padding:.45rem .9rem;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--txt2);font-family:var(--font);transition:.15s;white-space:nowrap;}
+.btn:hover{border-color:var(--border2);color:var(--txt)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.primary:hover{background:var(--blue2);border-color:var(--blue2)}
+.btn.success{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);color:#22C55E}
+.btn.warning{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:#F59E0B}
+.theme-btn{width:36px;height:36px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:.15s;}
+.theme-btn:hover{border-color:var(--border2)}
+.status-pill{padding:.35rem .85rem;border-radius:99px;font-size:12px;font-weight:500;background:var(--bg3);border:1px solid var(--border);color:var(--txt2);white-space:nowrap;}
+.status-pill.loaded{color:var(--green);border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.08)}
 
-  /* ── LAYOUT ── */
-  main{max-width:1280px;margin:0 auto;padding:2rem 2rem 4rem}
+/* LAYOUT */
+main{max-width:1280px;margin:0 auto;padding:2rem 2rem 4rem}
+.hero{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-xl);padding:2rem 2.5rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.1),transparent 70%);pointer-events:none;}
+.hero-left h2{font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:.4rem}
+.hero-left p{font-size:13px;color:var(--txt2);max-width:440px;line-height:1.7}
+.hero-meta{display:flex;gap:2rem;margin-top:1.25rem;flex-wrap:wrap}
+.hero-meta-item{font-size:12px;color:var(--txt3)}
+.hero-meta-item strong{display:block;color:var(--txt2);font-weight:500}
+.corr-badge{display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:var(--radius-lg);padding:1.25rem 1.75rem;min-width:140px;text-align:center;}
+.corr-num{font-size:32px;font-weight:700;font-family:var(--mono);color:var(--blue)}
+.corr-lbl{font-size:11px;color:var(--txt2);margin-top:.3rem}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-bottom:1.5rem}
+.kpi{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:flex-start;gap:1rem;transition:border-color .2s,transform .2s;cursor:default;}
+.kpi:hover{border-color:var(--border2);transform:translateY(-2px)}
+.kpi-icon{width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.kpi-icon.blue{background:rgba(59,130,246,.15);color:var(--blue)}.kpi-icon.green{background:rgba(34,197,94,.12);color:var(--green)}.kpi-icon.red{background:rgba(239,68,68,.12);color:var(--red)}.kpi-icon.amber{background:rgba(245,158,11,.12);color:var(--amber)}
+.kpi-val{font-size:26px;font-weight:700;font-family:var(--mono);line-height:1;margin-bottom:.3rem}
+.kpi-val.blue{color:var(--blue)}.kpi-val.green{color:var(--green)}.kpi-val.red{color:var(--red)}.kpi-val.amber{color:var(--amber)}
+.kpi-lbl{font-size:12px;color:var(--txt2)}.kpi-delta{font-size:11px;color:var(--txt3);margin-top:.15rem;font-family:var(--mono)}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem}
+.grid-7-3{display:grid;grid-template-columns:7fr 3fr;gap:1rem;margin-bottom:1rem}
+.grid-6-4{display:grid;grid-template-columns:6fr 4fr;gap:1rem;margin-bottom:1rem}
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;overflow:hidden}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.5rem}
+.card-title{font-size:13px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em}
+.card-title-lg{font-size:16px;font-weight:600;color:var(--txt)}
+.section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.chart-wrap{position:relative;width:100%}
+.legend{display:flex;flex-wrap:wrap;gap:.75rem;font-size:12px;color:var(--txt2);margin-bottom:.75rem}
+.legend-dot{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:4px}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:11px;font-weight:600;color:var(--txt3);padding:.6rem .75rem;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em}
+.tbl td{padding:.7rem .75rem;border-bottom:1px solid rgba(42,51,71,.4);font-size:13px}
+[data-theme="light"] .tbl td{border-bottom:1px solid var(--border)}
+.tbl tr:last-child td{border:none}.tbl tr:hover td{background:var(--bg3)}
+.badge{display:inline-block;padding:.2rem .6rem;border-radius:99px;font-size:11px;font-weight:600;letter-spacing:.02em}
+.badge.pass{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.2)}
+.badge.fail{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.badge.high{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.2)}
+.badge.med{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.2)}
+.badge.low{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.badge.dept{background:rgba(59,130,246,.1);color:#93c5fd;border:1px solid rgba(59,130,246,.15)}
+[data-theme="light"] .badge.pass{color:#15803D}[data-theme="light"] .badge.fail{color:#B91C1C}
+[data-theme="light"] .badge.high{color:#15803D}[data-theme="light"] .badge.med{color:#B45309}
+[data-theme="light"] .badge.low{color:#B91C1C}[data-theme="light"] .badge.dept{color:#1D4ED8}
+.dept-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem}
+.dept-row:last-child{margin-bottom:0}
+.dept-name{font-size:13px;color:var(--txt2);min-width:38px}
+.dept-bar-outer{flex:1;height:8px;background:var(--bg4);border-radius:4px;overflow:hidden}
+.dept-bar-inner{height:100%;border-radius:4px;transition:width .6s ease}
+.dept-pct{font-size:12px;color:var(--txt2);min-width:38px;text-align:right;font-family:var(--mono)}
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1rem}
+.insight{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:.875rem 1rem;display:flex;gap:.75rem;align-items:flex-start}
+.insight-num{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.insight-num.blue{background:rgba(59,130,246,.15);color:var(--blue)}.insight-num.green{background:rgba(34,197,94,.12);color:var(--green)}.insight-num.amber{background:rgba(245,158,11,.12);color:var(--amber)}.insight-num.red{background:rgba(239,68,68,.12);color:var(--red)}
+.insight p{font-size:12px;color:var(--txt2);line-height:1.55}.insight strong{color:var(--txt);font-weight:500}
+.tab-row{display:flex;gap:.5rem;flex-wrap:wrap}
+.tab{padding:.4rem 1rem;border-radius:99px;font-size:12px;font-weight:500;background:var(--bg3);border:1px solid var(--border);color:var(--txt2);cursor:pointer;transition:.15s;font-family:var(--font)}
+.tab:hover{border-color:var(--border2);color:var(--txt)}.tab.active{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.4);color:var(--blue)}
 
-  /* ── HERO ── */
-  .hero{
-    background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-xl);
-    padding:2rem 2.5rem;margin-bottom:1.5rem;
-    display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;
-    position:relative;overflow:hidden;
-  }
-  .hero::before{
-    content:'';position:absolute;top:-40px;right:-40px;
-    width:220px;height:220px;border-radius:50%;
-    background:radial-gradient(circle,rgba(59,130,246,.12),transparent 70%);
-    pointer-events:none;
-  }
-  .hero-left h2{font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:.4rem}
-  .hero-left p{font-size:13px;color:var(--txt2);max-width:440px;line-height:1.7}
-  .hero-meta{display:flex;gap:2rem;margin-top:1.25rem;flex-wrap:wrap}
-  .hero-meta-item{font-size:12px;color:var(--txt3)}
-  .hero-meta-item strong{display:block;color:var(--txt2);font-weight:500}
-  .corr-badge{
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(139,92,246,.1));
-    border:1px solid rgba(59,130,246,.25);
-    border-radius:var(--radius-lg);padding:1.25rem 1.75rem;min-width:140px;text-align:center;
-  }
-  .corr-num{font-size:32px;font-weight:700;font-family:var(--mono);color:var(--blue)}
-  .corr-lbl{font-size:11px;color:var(--txt2);margin-top:.3rem}
+/* EXPORT BAR */
+.export-bar{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.5rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;}
+.export-bar-left{font-size:13px;color:var(--txt2)}
+.export-bar-left strong{color:var(--txt);display:block;margin-bottom:.1rem}
+.export-btns{display:flex;gap:.5rem;flex-wrap:wrap}
 
-  /* ── KPI GRID ── */
-  .kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-bottom:1.5rem}
-  .kpi{
-    background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);
-    padding:1.25rem 1.5rem;display:flex;align-items:flex-start;gap:1rem;
-    transition:border-color .2s,transform .2s;cursor:default
-  }
-  .kpi:hover{border-color:var(--border2);transform:translateY(-2px)}
-  .kpi-icon{
-    width:40px;height:40px;border-radius:var(--radius);display:flex;
-    align-items:center;justify-content:center;font-size:18px;flex-shrink:0
-  }
-  .kpi-icon.blue{background:rgba(59,130,246,.15);color:var(--blue)}
-  .kpi-icon.green{background:rgba(34,197,94,.12);color:var(--green)}
-  .kpi-icon.red{background:rgba(239,68,68,.12);color:var(--red)}
-  .kpi-icon.amber{background:rgba(245,158,11,.12);color:var(--amber)}
-  .kpi-val{font-size:26px;font-weight:700;font-family:var(--mono);line-height:1;margin-bottom:.3rem}
-  .kpi-val.blue{color:var(--blue)}.kpi-val.green{color:var(--green)}.kpi-val.red{color:var(--red)}.kpi-val.amber{color:var(--amber)}
-  .kpi-lbl{font-size:12px;color:var(--txt2)}
-  .kpi-delta{font-size:11px;color:var(--txt3);margin-top:.15rem;font-family:var(--mono)}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:500;background:var(--modal-overlay);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-xl);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;animation:modalIn .2s ease;}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-header h3{font-size:16px;font-weight:600;color:var(--txt)}
+.modal-close{width:32px;height:32px;border-radius:var(--radius);background:var(--bg3);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--txt2);transition:.15s;}
+.modal-close:hover{background:var(--bg4);color:var(--txt)}
+.modal-body{padding:1.5rem}
+.student-avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0;background:linear-gradient(135deg,var(--blue),var(--purple));}
+.report-hero{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.report-hero-info h4{font-size:17px;font-weight:600;color:var(--txt)}
+.report-hero-info p{font-size:13px;color:var(--txt2)}
+.score-circle{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;border:4px solid;}
+.score-circle .sc-val{font-size:18px;font-weight:700;font-family:var(--mono)}.score-circle .sc-lbl{font-size:9px;color:var(--txt2)}
+.stat-pills{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:1rem 0}
+.stat-pill{background:var(--bg3);border-radius:var(--radius);padding:.65rem;text-align:center}
+.stat-pill .sp-val{font-size:17px;font-weight:700;font-family:var(--mono);color:var(--txt)}.stat-pill .sp-lbl{font-size:10px;color:var(--txt3);margin-top:.15rem}
+.subject-row{background:var(--bg3);border-radius:var(--radius);padding:.75rem 1rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;}
+.subject-row:last-child{margin-bottom:0}
+.subj-name{font-size:13px;font-weight:500;color:var(--txt);flex:1}
+.subj-att{font-size:12px;color:var(--txt2);font-family:var(--mono);min-width:44px}
+.subj-marks{font-size:13px;font-weight:600;font-family:var(--mono);min-width:32px;text-align:right}
 
-  /* ── GRID LAYOUTS ── */
-  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
-  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem}
-  .grid-7-3{display:grid;grid-template-columns:7fr 3fr;gap:1rem;margin-bottom:1rem}
-  .grid-6-4{display:grid;grid-template-columns:6fr 4fr;gap:1rem;margin-bottom:1rem}
-
-  /* ── CARD ── */
-  .card{
-    background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);
-    padding:1.5rem;overflow:hidden
-  }
-  .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
-  .card-title{font-size:13px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em}
-  .card-title-lg{font-size:16px;font-weight:600;color:var(--txt)}
-  .section-label{
-    font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;
-    color:var(--txt3);margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem
-  }
-  .section-label::after{content:'';flex:1;height:1px;background:var(--border)}
-
-  /* ── CHARTS ── */
-  .chart-wrap{position:relative;width:100%}
-  .legend{display:flex;flex-wrap:wrap;gap:.75rem;font-size:12px;color:var(--txt2);margin-bottom:.75rem}
-  .legend-dot{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:4px}
-
-  /* ── TABLES ── */
-  .tbl{width:100%;border-collapse:collapse}
-  .tbl th{text-align:left;font-size:11px;font-weight:600;color:var(--txt3);
-    padding:.6rem .75rem;border-bottom:1px solid var(--border);
-    text-transform:uppercase;letter-spacing:.04em}
-  .tbl td{padding:.7rem .75rem;border-bottom:1px solid rgba(42,51,71,.6);font-size:13px}
-  .tbl tr:last-child td{border:none}
-  .tbl tr:hover td{background:var(--bg3)}
-
-  /* ── BADGES ── */
-  .badge{
-    display:inline-block;padding:.2rem .6rem;border-radius:99px;
-    font-size:11px;font-weight:600;letter-spacing:.02em
-  }
-  .badge.pass{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.2)}
-  .badge.fail{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2)}
-  .badge.high{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.2)}
-  .badge.med{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.2)}
-  .badge.low{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2)}
-  .badge.dept{background:rgba(59,130,246,.1);color:#93c5fd;border:1px solid rgba(59,130,246,.15)}
-
-  /* ── INSIGHTS ── */
-  .insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1rem}
-  .insight{
-    background:var(--bg3);border:1px solid var(--border);
-    border-radius:var(--radius);padding:.875rem 1rem;
-    display:flex;gap:.75rem;align-items:flex-start
-  }
-  .insight-num{
-    width:26px;height:26px;border-radius:6px;display:flex;align-items:center;
-    justify-content:center;font-size:12px;font-weight:700;flex-shrink:0
-  }
-  .insight-num.blue{background:rgba(59,130,246,.15);color:var(--blue)}
-  .insight-num.green{background:rgba(34,197,94,.12);color:var(--green)}
-  .insight-num.amber{background:rgba(245,158,11,.12);color:var(--amber)}
-  .insight-num.red{background:rgba(239,68,68,.12);color:var(--red)}
-  .insight p{font-size:12px;color:var(--txt2);line-height:1.55}
-  .insight strong{color:var(--txt);font-weight:500}
-
-  /* ── DEPT BARS ── */
-  .dept-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem}
-  .dept-row:last-child{margin-bottom:0}
-  .dept-name{font-size:13px;color:var(--txt2);min-width:38px}
-  .dept-bar-outer{flex:1;height:8px;background:var(--bg4);border-radius:4px;overflow:hidden}
-  .dept-bar-inner{height:100%;border-radius:4px;transition:width .6s ease}
-  .dept-pct{font-size:12px;color:var(--txt2);min-width:38px;text-align:right;font-family:var(--mono)}
-
-  /* ── PROGRESS CIRCLE ── */
-  .circle-wrap{display:flex;flex-direction:column;align-items:center;gap:.5rem}
-  .circle-wrap .circ-val{font-size:22px;font-weight:700;font-family:var(--mono)}
-  .circle-wrap .circ-lbl{font-size:11px;color:var(--txt2)}
-
-  /* ── UPLOAD OVERLAY ── */
-  .upload-overlay{
-    display:none;position:fixed;inset:0;z-index:1000;
-    background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
-    align-items:center;justify-content:center;
-  }
-  .upload-overlay.show{display:flex}
-  .upload-box{
-    background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-xl);
-    padding:3rem;text-align:center;max-width:440px;width:90%;
-  }
-  .upload-icon{font-size:48px;margin-bottom:1rem}
-  .upload-box h3{font-size:18px;font-weight:600;margin-bottom:.5rem}
-  .upload-box p{font-size:13px;color:var(--txt2);margin-bottom:1.5rem}
-  .upload-drop{
-    border:2px dashed var(--border2);border-radius:var(--radius-lg);
-    padding:2rem;cursor:pointer;transition:border-color .2s;
-    background:var(--bg3)
-  }
-  .upload-drop:hover,.upload-drop.drag{border-color:var(--blue)}
-  .upload-drop p{font-size:13px;color:var(--txt2)}
-  .upload-drop strong{color:var(--blue)}
-
-  /* ── TABS ── */
-  .tab-row{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
-  .tab{
-    padding:.4rem 1rem;border-radius:99px;font-size:12px;font-weight:500;
-    background:var(--bg3);border:1px solid var(--border);color:var(--txt2);
-    cursor:pointer;transition:.15s;font-family:var(--font)
-  }
-  .tab:hover{border-color:var(--border2);color:var(--txt)}
-  .tab.active{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.4);color:var(--blue)}
-
-  /* ── FOOTER ── */
-  footer{
-    text-align:center;padding:2rem;font-size:12px;color:var(--txt3);
-    border-top:1px solid var(--border);margin-top:2rem;
-  }
-
-  /* ── SCROLLBAR ── */
-  ::-webkit-scrollbar{width:6px;height:6px}
-  ::-webkit-scrollbar-track{background:var(--bg)}
-  ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-  ::-webkit-scrollbar-thumb:hover{background:var(--txt3)}
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-  .anim{animation:fadeUp .4s ease both}
-  .anim-d1{animation-delay:.05s}.anim-d2{animation-delay:.1s}.anim-d3{animation-delay:.15s}.anim-d4{animation-delay:.2s}
-
-  @media(max-width:900px){
-    .kpi-grid{grid-template-columns:1fr 1fr}
-    .grid-2,.grid-3,.grid-7-3,.grid-6-4{grid-template-columns:1fr}
-    main{padding:1rem}
-    nav{padding:.6rem 1rem}
-  }
-  @media(max-width:600px){
-    .kpi-grid{grid-template-columns:1fr 1fr}
-    .hero{flex-direction:column}
-    .hero-meta{gap:1rem}
-  }
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.anim{animation:fadeUp .4s ease both}.anim-d1{animation-delay:.05s}.anim-d2{animation-delay:.1s}.anim-d3{animation-delay:.15s}.anim-d4{animation-delay:.2s}
+footer{text-align:center;padding:2rem;font-size:12px;color:var(--txt3);border-top:1px solid var(--border);margin-top:2rem;margin: 6px 0;}
+@media(max-width:900px){.kpi-grid{grid-template-columns:1fr 1fr}.grid-3,.grid-7-3,.grid-6-4{grid-template-columns:1fr}main{padding:1rem}nav{padding:.6rem 1rem}.nav-search input{width:120px}}
+@media(max-width:600px){.kpi-grid{grid-template-columns:1fr 1fr}.hero{flex-direction:column}.insight-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav>
   <div class="nav-brand">
     <div class="nav-logo">📊</div>
-    <div>
-      <div class="nav-title">AttendanceIQ</div>
-      <div class="nav-sub">P.E.S. College of Engineering</div>
-    </div>
+    <div><div class="nav-title">AttendanceIQ</div><div class="nav-sub">Smart Student Analytics</div></div>
   </div>
   <div class="nav-actions">
+    <!-- FEATURE 1: SEARCH BAR -->
+    <div class="search-wrap">
+      <div class="nav-search">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Search student name / ID..." autocomplete="off" oninput="handleSearch(this.value)"/>
+      </div>
+      <div class="search-dropdown" id="searchDropdown" style="display:none"></div>
+    </div>
     <span class="status-pill" id="statusPill">No data loaded</span>
-    <label class="upload-btn">
+    <!-- FEATURE 3: THEME TOGGLE BUTTON -->
+    <button class="theme-btn" onclick="toggleTheme()" title="Toggle Light/Dark" id="themeBtn">🌙</button>
+    <label class="btn primary" style="cursor:pointer">
       📂 Upload CSV
-      <input type="file" accept=".csv" id="csvInput" onchange="loadCSV(this)"/>
+      <input type="file" accept=".csv" id="csvInput" onchange="loadCSV(this)" style="display:none"/>
     </label>
   </div>
 </nav>
 
 <main>
-  <!-- HERO -->
   <div class="hero anim">
     <div class="hero-left">
       <h2>Attendance vs Academic Performance</h2>
-      <p>Discover hidden patterns between student attendance and academic outcomes across departments, semesters, and subjects. Identify at-risk students before it's too late.</p>
+      <p>Discover hidden patterns between student attendance and academic outcomes. Search any student, view their report card, and export data anytime.</p>
       <div class="hero-meta">
-        <div class="hero-meta-item"><strong>Student</strong>Krushna Sanjay Jadhav</div>
-        <div class="hero-meta-item"><strong>PRN</strong>24021341844507</div>
-        <div class="hero-meta-item"><strong>Guide</strong>Prof. J.P. Zine</div>
-        <div class="hero-meta-item"><strong>Department</strong>ECE · Sem 3 & 4</div>
+        <div class="hero-meta-item"><strong>✓ Attendance Analytics</strong></div>
+        <div class="hero-meta-item"><strong>✓ Performance Prediction</strong></div>
+        <div class="hero-meta-item"><strong>✓ Export PDF & Excel</strong></div>
+        <div class="hero-meta-item"><strong>✓ Student Risk Detection</strong></div>
       </div>
     </div>
     <div class="corr-badge">
@@ -290,110 +215,53 @@
     </div>
   </div>
 
-  <!-- KPI CARDS -->
   <div class="kpi-grid">
-    <div class="kpi anim anim-d1">
-      <div class="kpi-icon blue">👥</div>
-      <div>
-        <div class="kpi-val blue" id="kpiStudents">25</div>
-        <div class="kpi-lbl">Total Students</div>
-        <div class="kpi-delta">75 subject records</div>
-      </div>
+    <div class="kpi anim anim-d1"><div class="kpi-icon blue">👥</div><div><div class="kpi-val blue" id="kpiStudents">25</div><div class="kpi-lbl">Total Students</div><div class="kpi-delta" id="kpiRecords">75 subject records</div></div></div>
+    <div class="kpi anim anim-d2"><div class="kpi-icon green">✅</div><div><div class="kpi-val green" id="kpiPass">64.0%</div><div class="kpi-lbl">Overall Pass Rate</div><div class="kpi-delta" id="kpiPassDetail">Pass / Fail split</div></div></div>
+    <div class="kpi anim anim-d3"><div class="kpi-icon red">⚠️</div><div><div class="kpi-val red" id="kpiBacklogs">36</div><div class="kpi-lbl">Total Backlogs</div><div class="kpi-delta" id="kpiBacklogDetail">across all subjects</div></div></div>
+    <div class="kpi anim anim-d4"><div class="kpi-icon amber">📅</div><div><div class="kpi-val amber" id="kpiAtt">66.5%</div><div class="kpi-lbl">Avg Attendance</div><div class="kpi-delta">75% threshold req.</div></div></div>
+  </div>
+
+  <!-- FEATURE 4: EXPORT BAR -->
+  <div class="export-bar anim">
+    <div class="export-bar-left">
+      <strong>Export Data</strong>
+      Download full report as PDF or Excel — includes all student data and at-risk list
     </div>
-    <div class="kpi anim anim-d2">
-      <div class="kpi-icon green">✅</div>
-      <div>
-        <div class="kpi-val green" id="kpiPass">64.0%</div>
-        <div class="kpi-lbl">Overall Pass Rate</div>
-        <div class="kpi-delta" id="kpiPassDetail">Pass / Fail split</div>
-      </div>
-    </div>
-    <div class="kpi anim anim-d3">
-      <div class="kpi-icon red">⚠️</div>
-      <div>
-        <div class="kpi-val red" id="kpiBacklogs">36</div>
-        <div class="kpi-lbl">Total Backlogs</div>
-        <div class="kpi-delta" id="kpiBacklogDetail">across all subjects</div>
-      </div>
-    </div>
-    <div class="kpi anim anim-d4">
-      <div class="kpi-icon amber">📅</div>
-      <div>
-        <div class="kpi-val amber" id="kpiAtt">66.5%</div>
-        <div class="kpi-lbl">Avg Attendance</div>
-        <div class="kpi-delta">75% threshold req.</div>
-      </div>
+    <div class="export-btns">
+      <button class="btn warning" onclick="exportPDF()">📄 Export PDF Report</button>
+      <button class="btn success" onclick="exportExcel()">📊 Export Excel (.xlsx)</button>
     </div>
   </div>
 
-  <!-- SCATTER + DEPT -->
   <div class="grid-7-3">
     <div class="card anim">
       <div class="card-header">
-        <span class="card-title">Attendance % vs Total Marks — All Students</span>
-        <div class="legend">
-          <span><span class="legend-dot" style="background:#22C55E"></span>Pass</span>
-          <span><span class="legend-dot" style="background:#EF4444;clip-path:polygon(50% 0%,0% 100%,100% 100%)"></span>Fail</span>
-          <span><span class="legend-dot" style="background:#3B82F6;border-radius:0"></span>Trend line</span>
-        </div>
+        <span class="card-title">Attendance % vs Total Marks</span>
+        <div class="legend"><span><span class="legend-dot" style="background:#22C55E"></span>Pass</span><span><span class="legend-dot" style="background:#EF4444"></span>Fail</span></div>
       </div>
-      <div class="chart-wrap" style="height:280px">
-        <canvas id="scatterChart" role="img" aria-label="Scatter plot of attendance percentage vs total marks showing strong positive correlation. Students with higher attendance consistently pass.">Strong positive correlation: attendance above 75% almost always results in passing marks.</canvas>
-      </div>
+      <div class="chart-wrap" style="height:280px"><canvas id="scatterChart"></canvas></div>
     </div>
     <div class="card anim anim-d1">
       <div class="card-header"><span class="card-title">Department Overview</span></div>
       <div class="section-label">Avg Attendance</div>
       <div id="deptBars"></div>
       <div class="section-label" style="margin-top:1.25rem">Backlogs Share</div>
-      <div class="chart-wrap" style="height:130px;margin-top:.5rem">
-        <canvas id="pieChart" role="img" aria-label="Donut chart showing backlog distribution across departments. CSE has the most backlogs.">CSE has most backlogs, followed by ECE and ME.</canvas>
-      </div>
+      <div class="chart-wrap" style="height:130px;margin-top:.5rem"><canvas id="pieChart"></canvas></div>
     </div>
   </div>
 
-  <!-- CATEGORY BAR + SUBJECT + SEM -->
   <div class="grid-3">
-    <div class="card anim">
-      <div class="card-header"><span class="card-title">Pass Rate by Attendance Band</span></div>
-      <div class="chart-wrap" style="height:220px">
-        <canvas id="attCatChart" role="img" aria-label="Bar chart showing pass rate for three attendance bands: low under 65 percent, medium 65 to 84 percent, high 85 percent and above.">Low attendance: 0% pass. Medium: about 78%. High: 100% pass rate.</canvas>
-      </div>
-    </div>
-    <div class="card anim anim-d1">
-      <div class="card-header"><span class="card-title">Subject-wise Avg Marks</span></div>
-      <div class="chart-wrap" style="height:220px">
-        <canvas id="subjectChart" role="img" aria-label="Horizontal bar chart comparing average total marks across three subjects.">Digital Electronics highest average, Signals and Systems lowest.</canvas>
-      </div>
-    </div>
-    <div class="card anim anim-d2">
-      <div class="card-header"><span class="card-title">Semester Comparison</span></div>
-      <div class="chart-wrap" style="height:220px">
-        <canvas id="semChart" role="img" aria-label="Grouped bar chart comparing average attendance and marks between semester 3 and semester 4.">Both semesters have similar attendance and marks distributions.</canvas>
-      </div>
-    </div>
+    <div class="card anim"><div class="card-header"><span class="card-title">Pass Rate by Attendance Band</span></div><div class="chart-wrap" style="height:220px"><canvas id="attCatChart"></canvas></div></div>
+    <div class="card anim anim-d1"><div class="card-header"><span class="card-title">Subject-wise Avg Marks</span></div><div class="chart-wrap" style="height:220px"><canvas id="subjectChart"></canvas></div></div>
+    <div class="card anim anim-d2"><div class="card-header"><span class="card-title">Semester Comparison</span></div><div class="chart-wrap" style="height:220px"><canvas id="semChart"></canvas></div></div>
   </div>
 
-  <!-- BACKLOG ANALYSIS -->
   <div class="grid-6-4">
-    <div class="card anim">
-      <div class="card-header">
-        <span class="card-title">Backlogs by Subject &amp; Attendance Category</span>
-      </div>
-      <div class="chart-wrap" style="height:220px">
-        <canvas id="backlogChart" role="img" aria-label="Grouped bar chart showing number of backlogs for each subject broken down by attendance band.">Most backlogs occur in students with low attendance across all subjects.</canvas>
-      </div>
-    </div>
-    <div class="card anim anim-d1">
-      <div class="card-header"><span class="card-title">Attendance Category Stats</span></div>
-      <table class="tbl">
-        <thead><tr><th>Category</th><th>Students</th><th>Pass %</th><th>Backlogs</th></tr></thead>
-        <tbody id="catTableBody"></tbody>
-      </table>
-    </div>
+    <div class="card anim"><div class="card-header"><span class="card-title">Backlogs by Subject &amp; Attendance Category</span></div><div class="chart-wrap" style="height:220px"><canvas id="backlogChart"></canvas></div></div>
+    <div class="card anim anim-d1"><div class="card-header"><span class="card-title">Attendance Category Stats</span></div><table class="tbl"><thead><tr><th>Category</th><th>Students</th><th>Pass %</th><th>Backlogs</th></tr></thead><tbody id="catTableBody"></tbody></table></div>
   </div>
 
-  <!-- AT-RISK TABLE -->
   <div class="card anim" style="margin-bottom:1rem">
     <div class="card-header">
       <span class="card-title-lg">⚠️ At-Risk Students</span>
@@ -405,393 +273,263 @@
       </div>
     </div>
     <div style="overflow-x:auto">
-      <table class="tbl" id="riskTable">
-        <thead>
-          <tr>
-            <th>Student</th><th>ID</th><th>Dept</th><th>Sem</th>
-            <th>Avg Attendance</th><th>Avg Marks</th><th>Backlogs</th><th>Status</th>
-          </tr>
-        </thead>
+      <table class="tbl">
+        <thead><tr><th>Student</th><th>ID</th><th>Dept</th><th>Sem</th><th>Avg Att.</th><th>Avg Marks</th><th>Backlogs</th><th>Status</th><th>Report</th></tr></thead>
         <tbody id="riskBody"></tbody>
       </table>
     </div>
   </div>
 
-  <!-- KEY INSIGHTS -->
   <div class="card anim">
     <div class="card-header"><span class="card-title-lg">🔍 Key Hidden Patterns</span></div>
     <div class="insight-grid">
-      <div class="insight">
-        <div class="insight-num blue">1</div>
-        <p>Students with <strong>&lt;50% attendance have 100% backlog rate</strong> — zero exceptions across all subjects and departments.</p>
-      </div>
-      <div class="insight">
-        <div class="insight-num green">2</div>
-        <p><strong>Attendance above 85% guarantees passing</strong> in all three subjects — no student with high attendance failed.</p>
-      </div>
-      <div class="insight">
-        <div class="insight-num amber">3</div>
-        <p><strong>ECE has the highest average attendance</strong> (82%) while CSE has the most backlogs (15 out of 36 total).</p>
-      </div>
-      <div class="insight">
-        <div class="insight-num red">4</div>
-        <p><strong>Internal marks correlate r &gt; 0.95 with attendance</strong> — attendance directly drives internal assessment scores.</p>
-      </div>
-      <div class="insight">
-        <div class="insight-num blue">5</div>
-        <p>The <strong>75% attendance threshold</strong> acts as a critical divider — students below it show sharply lower performance.</p>
-      </div>
-      <div class="insight">
-        <div class="insight-num green">6</div>
-        <p><strong>Microprocessors has the most backlogs</strong> across all departments — indicating it's the most challenging subject.</p>
-      </div>
+      <div class="insight"><div class="insight-num blue">1</div><p>Students with <strong>&lt;50% attendance have 100% backlog rate</strong> — zero exceptions across all subjects.</p></div>
+      <div class="insight"><div class="insight-num green">2</div><p><strong>Attendance above 85% guarantees passing</strong> in all three subjects without exception.</p></div>
+      <div class="insight"><div class="insight-num amber">3</div><p><strong>ECE highest avg attendance</strong> (82%) while CSE has the most backlogs overall.</p></div>
+      <div class="insight"><div class="insight-num red">4</div><p><strong>Internal marks correlate r &gt; 0.95</strong> with attendance — it directly drives internal scores.</p></div>
+      <div class="insight"><div class="insight-num blue">5</div><p>The <strong>75% attendance threshold</strong> is a critical divider — students below it show sharply lower scores.</p></div>
+      <div class="insight"><div class="insight-num green">6</div><p><strong>Microprocessors has the most backlogs</strong> — the most challenging subject across all departments.</p></div>
     </div>
   </div>
 </main>
-
 <footer>
-  AttendanceIQ · P.E.S. College of Engineering · Student: Krushna Sanjay Jadhav · PRN: 24021341844507 · Guide: Prof. J.P. Zine
+    <p>AttendanceIQ © 2026 • Smart Student Analytics Dashboard</p>
+
+    <p><h4>Developed by Krushna Sanjay Jadhav • Version 1.0</h4></p>
+
+    <p>All rights reserved.</p>
 </footer>
 
+<!-- FEATURE 2: REPORT CARD MODAL -->
+<div class="modal-overlay" id="reportModal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>📋 Student Report Card</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
 <script>
-// ─── DEFAULT DATA (matches student_data.csv exactly) ─────────────────────
-const DEFAULT_DATA = [
-  {Student_ID:'S001',Name:'Aarav Shah',Department:'ECE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:92,Internal_Marks:18,External_Marks:65,Backlog:0,Total_Marks:83,Status:'Pass'},
-  {Student_ID:'S001',Name:'Aarav Shah',Department:'ECE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:85,Internal_Marks:16,External_Marks:58,Backlog:0,Total_Marks:74,Status:'Pass'},
-  {Student_ID:'S001',Name:'Aarav Shah',Department:'ECE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:88,Internal_Marks:17,External_Marks:62,Backlog:0,Total_Marks:79,Status:'Pass'},
-  {Student_ID:'S002',Name:'Priya Patil',Department:'ECE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:45,Internal_Marks:8,External_Marks:22,Backlog:1,Total_Marks:30,Status:'Fail'},
-  {Student_ID:'S002',Name:'Priya Patil',Department:'ECE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:40,Internal_Marks:7,External_Marks:18,Backlog:1,Total_Marks:25,Status:'Fail'},
-  {Student_ID:'S002',Name:'Priya Patil',Department:'ECE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:38,Internal_Marks:6,External_Marks:15,Backlog:1,Total_Marks:21,Status:'Fail'},
-  {Student_ID:'S003',Name:'Rohit Jadhav',Department:'ECE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:75,Internal_Marks:14,External_Marks:50,Backlog:0,Total_Marks:64,Status:'Pass'},
-  {Student_ID:'S003',Name:'Rohit Jadhav',Department:'ECE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:72,Internal_Marks:13,External_Marks:48,Backlog:0,Total_Marks:61,Status:'Pass'},
-  {Student_ID:'S003',Name:'Rohit Jadhav',Department:'ECE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:78,Internal_Marks:15,External_Marks:52,Backlog:0,Total_Marks:67,Status:'Pass'},
-  {Student_ID:'S004',Name:'Sneha Kulkarni',Department:'CSE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:60,Internal_Marks:11,External_Marks:38,Backlog:0,Total_Marks:49,Status:'Pass'},
-  {Student_ID:'S004',Name:'Sneha Kulkarni',Department:'CSE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:55,Internal_Marks:10,External_Marks:33,Backlog:0,Total_Marks:43,Status:'Pass'},
-  {Student_ID:'S004',Name:'Sneha Kulkarni',Department:'CSE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:58,Internal_Marks:11,External_Marks:36,Backlog:0,Total_Marks:47,Status:'Pass'},
-  {Student_ID:'S005',Name:'Amit Deshmukh',Department:'CSE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:30,Internal_Marks:5,External_Marks:12,Backlog:1,Total_Marks:17,Status:'Fail'},
-  {Student_ID:'S005',Name:'Amit Deshmukh',Department:'CSE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:28,Internal_Marks:4,External_Marks:10,Backlog:1,Total_Marks:14,Status:'Fail'},
-  {Student_ID:'S005',Name:'Amit Deshmukh',Department:'CSE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:32,Internal_Marks:5,External_Marks:14,Backlog:1,Total_Marks:19,Status:'Fail'},
-  {Student_ID:'S006',Name:'Kavya Nair',Department:'ME',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:80,Internal_Marks:15,External_Marks:55,Backlog:0,Total_Marks:70,Status:'Pass'},
-  {Student_ID:'S006',Name:'Kavya Nair',Department:'ME',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:83,Internal_Marks:16,External_Marks:57,Backlog:0,Total_Marks:73,Status:'Pass'},
-  {Student_ID:'S006',Name:'Kavya Nair',Department:'ME',Semester:3,Subject:'Microprocessors',Attendance_Percentage:79,Internal_Marks:15,External_Marks:54,Backlog:0,Total_Marks:69,Status:'Pass'},
-  {Student_ID:'S007',Name:'Vikram More',Department:'ME',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:50,Internal_Marks:9,External_Marks:28,Backlog:1,Total_Marks:37,Status:'Fail'},
-  {Student_ID:'S007',Name:'Vikram More',Department:'ME',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:48,Internal_Marks:8,External_Marks:25,Backlog:1,Total_Marks:33,Status:'Fail'},
-  {Student_ID:'S007',Name:'Vikram More',Department:'ME',Semester:3,Subject:'Microprocessors',Attendance_Percentage:52,Internal_Marks:9,External_Marks:30,Backlog:1,Total_Marks:39,Status:'Fail'},
-  {Student_ID:'S008',Name:'Pooja Sharma',Department:'ECE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:95,Internal_Marks:19,External_Marks:72,Backlog:0,Total_Marks:91,Status:'Pass'},
-  {Student_ID:'S008',Name:'Pooja Sharma',Department:'ECE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:93,Internal_Marks:18,External_Marks:70,Backlog:0,Total_Marks:88,Status:'Pass'},
-  {Student_ID:'S008',Name:'Pooja Sharma',Department:'ECE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:91,Internal_Marks:19,External_Marks:68,Backlog:0,Total_Marks:87,Status:'Pass'},
-  {Student_ID:'S009',Name:'Nikhil Joshi',Department:'ECE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:65,Internal_Marks:12,External_Marks:42,Backlog:0,Total_Marks:54,Status:'Pass'},
-  {Student_ID:'S009',Name:'Nikhil Joshi',Department:'ECE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:62,Internal_Marks:11,External_Marks:39,Backlog:0,Total_Marks:50,Status:'Pass'},
-  {Student_ID:'S009',Name:'Nikhil Joshi',Department:'ECE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:68,Internal_Marks:12,External_Marks:44,Backlog:0,Total_Marks:56,Status:'Pass'},
-  {Student_ID:'S010',Name:'Riya Mehta',Department:'CSE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:42,Internal_Marks:7,External_Marks:20,Backlog:1,Total_Marks:27,Status:'Fail'},
-  {Student_ID:'S010',Name:'Riya Mehta',Department:'CSE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:38,Internal_Marks:6,External_Marks:18,Backlog:1,Total_Marks:24,Status:'Fail'},
-  {Student_ID:'S010',Name:'Riya Mehta',Department:'CSE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:40,Internal_Marks:7,External_Marks:19,Backlog:1,Total_Marks:26,Status:'Fail'},
-  {Student_ID:'S011',Name:'Arjun Tiwari',Department:'ECE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:88,Internal_Marks:17,External_Marks:63,Backlog:0,Total_Marks:80,Status:'Pass'},
-  {Student_ID:'S011',Name:'Arjun Tiwari',Department:'ECE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:85,Internal_Marks:16,External_Marks:60,Backlog:0,Total_Marks:76,Status:'Pass'},
-  {Student_ID:'S011',Name:'Arjun Tiwari',Department:'ECE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:90,Internal_Marks:18,External_Marks:66,Backlog:0,Total_Marks:84,Status:'Pass'},
-  {Student_ID:'S012',Name:'Meera Iyer',Department:'ECE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:55,Internal_Marks:10,External_Marks:34,Backlog:0,Total_Marks:44,Status:'Pass'},
-  {Student_ID:'S012',Name:'Meera Iyer',Department:'ECE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:52,Internal_Marks:9,External_Marks:31,Backlog:1,Total_Marks:40,Status:'Fail'},
-  {Student_ID:'S012',Name:'Meera Iyer',Department:'ECE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:50,Internal_Marks:9,External_Marks:29,Backlog:1,Total_Marks:38,Status:'Fail'},
-  {Student_ID:'S013',Name:'Suresh Rao',Department:'CSE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:72,Internal_Marks:13,External_Marks:49,Backlog:0,Total_Marks:62,Status:'Pass'},
-  {Student_ID:'S013',Name:'Suresh Rao',Department:'CSE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:70,Internal_Marks:13,External_Marks:47,Backlog:0,Total_Marks:60,Status:'Pass'},
-  {Student_ID:'S013',Name:'Suresh Rao',Department:'CSE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:75,Internal_Marks:14,External_Marks:51,Backlog:0,Total_Marks:65,Status:'Pass'},
-  {Student_ID:'S014',Name:'Divya Patel',Department:'CSE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:35,Internal_Marks:6,External_Marks:15,Backlog:1,Total_Marks:21,Status:'Fail'},
-  {Student_ID:'S014',Name:'Divya Patel',Department:'CSE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:30,Internal_Marks:5,External_Marks:12,Backlog:1,Total_Marks:17,Status:'Fail'},
-  {Student_ID:'S014',Name:'Divya Patel',Department:'CSE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:33,Internal_Marks:5,External_Marks:14,Backlog:1,Total_Marks:19,Status:'Fail'},
-  {Student_ID:'S015',Name:'Rahul Gupta',Department:'ME',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:82,Internal_Marks:16,External_Marks:57,Backlog:0,Total_Marks:73,Status:'Pass'},
-  {Student_ID:'S015',Name:'Rahul Gupta',Department:'ME',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:78,Internal_Marks:15,External_Marks:54,Backlog:0,Total_Marks:69,Status:'Pass'},
-  {Student_ID:'S015',Name:'Rahul Gupta',Department:'ME',Semester:4,Subject:'Microprocessors',Attendance_Percentage:80,Internal_Marks:15,External_Marks:56,Backlog:0,Total_Marks:71,Status:'Pass'},
-  {Student_ID:'S016',Name:'Ananya Singh',Department:'ME',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:47,Internal_Marks:8,External_Marks:24,Backlog:1,Total_Marks:32,Status:'Fail'},
-  {Student_ID:'S016',Name:'Ananya Singh',Department:'ME',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:45,Internal_Marks:7,External_Marks:22,Backlog:1,Total_Marks:29,Status:'Fail'},
-  {Student_ID:'S016',Name:'Ananya Singh',Department:'ME',Semester:4,Subject:'Microprocessors',Attendance_Percentage:43,Internal_Marks:7,External_Marks:20,Backlog:1,Total_Marks:27,Status:'Fail'},
-  {Student_ID:'S017',Name:'Kiran Jain',Department:'ECE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:90,Internal_Marks:18,External_Marks:67,Backlog:0,Total_Marks:85,Status:'Pass'},
-  {Student_ID:'S017',Name:'Kiran Jain',Department:'ECE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:88,Internal_Marks:17,External_Marks:64,Backlog:0,Total_Marks:81,Status:'Pass'},
-  {Student_ID:'S017',Name:'Kiran Jain',Department:'ECE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:92,Internal_Marks:18,External_Marks:69,Backlog:0,Total_Marks:87,Status:'Pass'},
-  {Student_ID:'S018',Name:'Tanvi Bhatt',Department:'ECE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:63,Internal_Marks:11,External_Marks:40,Backlog:0,Total_Marks:51,Status:'Pass'},
-  {Student_ID:'S018',Name:'Tanvi Bhatt',Department:'ECE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:60,Internal_Marks:10,External_Marks:37,Backlog:0,Total_Marks:47,Status:'Pass'},
-  {Student_ID:'S018',Name:'Tanvi Bhatt',Department:'ECE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:65,Internal_Marks:12,External_Marks:42,Backlog:0,Total_Marks:54,Status:'Pass'},
-  {Student_ID:'S019',Name:'Manish Verma',Department:'CSE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:25,Internal_Marks:4,External_Marks:8,Backlog:1,Total_Marks:12,Status:'Fail'},
-  {Student_ID:'S019',Name:'Manish Verma',Department:'CSE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:22,Internal_Marks:3,External_Marks:6,Backlog:1,Total_Marks:9,Status:'Fail'},
-  {Student_ID:'S019',Name:'Manish Verma',Department:'CSE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:28,Internal_Marks:4,External_Marks:10,Backlog:1,Total_Marks:14,Status:'Fail'},
-  {Student_ID:'S020',Name:'Lakshmi Reddy',Department:'ME',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:77,Internal_Marks:14,External_Marks:53,Backlog:0,Total_Marks:67,Status:'Pass'},
-  {Student_ID:'S020',Name:'Lakshmi Reddy',Department:'ME',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:75,Internal_Marks:14,External_Marks:51,Backlog:0,Total_Marks:65,Status:'Pass'},
-  {Student_ID:'S020',Name:'Lakshmi Reddy',Department:'ME',Semester:4,Subject:'Microprocessors',Attendance_Percentage:73,Internal_Marks:13,External_Marks:49,Backlog:0,Total_Marks:62,Status:'Pass'},
-  {Student_ID:'S021',Name:'Siddharth Kumar',Department:'ECE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:85,Internal_Marks:16,External_Marks:60,Backlog:0,Total_Marks:76,Status:'Pass'},
-  {Student_ID:'S021',Name:'Siddharth Kumar',Department:'ECE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:80,Internal_Marks:15,External_Marks:57,Backlog:0,Total_Marks:72,Status:'Pass'},
-  {Student_ID:'S021',Name:'Siddharth Kumar',Department:'ECE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:83,Internal_Marks:16,External_Marks:59,Backlog:0,Total_Marks:75,Status:'Pass'},
-  {Student_ID:'S022',Name:'Nisha Agarwal',Department:'CSE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:57,Internal_Marks:10,External_Marks:35,Backlog:0,Total_Marks:45,Status:'Pass'},
-  {Student_ID:'S022',Name:'Nisha Agarwal',Department:'CSE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:53,Internal_Marks:9,External_Marks:32,Backlog:0,Total_Marks:41,Status:'Pass'},
-  {Student_ID:'S022',Name:'Nisha Agarwal',Department:'CSE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:55,Internal_Marks:10,External_Marks:34,Backlog:0,Total_Marks:44,Status:'Pass'},
-  {Student_ID:'S023',Name:'Deepak Yadav',Department:'ME',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:70,Internal_Marks:13,External_Marks:47,Backlog:0,Total_Marks:60,Status:'Pass'},
-  {Student_ID:'S023',Name:'Deepak Yadav',Department:'ME',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:68,Internal_Marks:12,External_Marks:45,Backlog:0,Total_Marks:57,Status:'Pass'},
-  {Student_ID:'S023',Name:'Deepak Yadav',Department:'ME',Semester:3,Subject:'Microprocessors',Attendance_Percentage:72,Internal_Marks:13,External_Marks:48,Backlog:0,Total_Marks:61,Status:'Pass'},
-  {Student_ID:'S024',Name:'Shweta Pandey',Department:'ECE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:91,Internal_Marks:18,External_Marks:66,Backlog:0,Total_Marks:84,Status:'Pass'},
-  {Student_ID:'S024',Name:'Shweta Pandey',Department:'ECE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:89,Internal_Marks:17,External_Marks:63,Backlog:0,Total_Marks:80,Status:'Pass'},
-  {Student_ID:'S024',Name:'Shweta Pandey',Department:'ECE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:93,Internal_Marks:19,External_Marks:70,Backlog:0,Total_Marks:89,Status:'Pass'},
-  {Student_ID:'S025',Name:'Rajesh Mishra',Department:'CSE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:44,Internal_Marks:7,External_Marks:21,Backlog:1,Total_Marks:28,Status:'Fail'},
-  {Student_ID:'S025',Name:'Rajesh Mishra',Department:'CSE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:40,Internal_Marks:6,External_Marks:18,Backlog:1,Total_Marks:24,Status:'Fail'},
-  {Student_ID:'S025',Name:'Rajesh Mishra',Department:'CSE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:42,Internal_Marks:7,External_Marks:20,Backlog:1,Total_Marks:27,Status:'Fail'},
-];
+const DEFAULT_DATA=[{Student_ID:'S001',Name:'Aarav Shah',Department:'ECE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:92,Internal_Marks:18,External_Marks:65,Backlog:0,Total_Marks:83,Status:'Pass'},{Student_ID:'S001',Name:'Aarav Shah',Department:'ECE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:85,Internal_Marks:16,External_Marks:58,Backlog:0,Total_Marks:74,Status:'Pass'},{Student_ID:'S001',Name:'Aarav Shah',Department:'ECE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:88,Internal_Marks:17,External_Marks:62,Backlog:0,Total_Marks:79,Status:'Pass'},{Student_ID:'S002',Name:'Priya Patil',Department:'ECE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:45,Internal_Marks:8,External_Marks:22,Backlog:1,Total_Marks:30,Status:'Fail'},{Student_ID:'S002',Name:'Priya Patil',Department:'ECE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:40,Internal_Marks:7,External_Marks:18,Backlog:1,Total_Marks:25,Status:'Fail'},{Student_ID:'S002',Name:'Priya Patil',Department:'ECE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:38,Internal_Marks:6,External_Marks:15,Backlog:1,Total_Marks:21,Status:'Fail'},{Student_ID:'S003',Name:'Rohit Jadhav',Department:'ECE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:75,Internal_Marks:14,External_Marks:50,Backlog:0,Total_Marks:64,Status:'Pass'},{Student_ID:'S003',Name:'Rohit Jadhav',Department:'ECE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:72,Internal_Marks:13,External_Marks:48,Backlog:0,Total_Marks:61,Status:'Pass'},{Student_ID:'S003',Name:'Rohit Jadhav',Department:'ECE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:78,Internal_Marks:15,External_Marks:52,Backlog:0,Total_Marks:67,Status:'Pass'},{Student_ID:'S004',Name:'Sneha Kulkarni',Department:'CSE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:60,Internal_Marks:11,External_Marks:38,Backlog:0,Total_Marks:49,Status:'Pass'},{Student_ID:'S004',Name:'Sneha Kulkarni',Department:'CSE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:55,Internal_Marks:10,External_Marks:33,Backlog:0,Total_Marks:43,Status:'Pass'},{Student_ID:'S004',Name:'Sneha Kulkarni',Department:'CSE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:58,Internal_Marks:11,External_Marks:36,Backlog:0,Total_Marks:47,Status:'Pass'},{Student_ID:'S005',Name:'Amit Deshmukh',Department:'CSE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:30,Internal_Marks:5,External_Marks:12,Backlog:1,Total_Marks:17,Status:'Fail'},{Student_ID:'S005',Name:'Amit Deshmukh',Department:'CSE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:28,Internal_Marks:4,External_Marks:10,Backlog:1,Total_Marks:14,Status:'Fail'},{Student_ID:'S005',Name:'Amit Deshmukh',Department:'CSE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:32,Internal_Marks:5,External_Marks:14,Backlog:1,Total_Marks:19,Status:'Fail'},{Student_ID:'S006',Name:'Kavya Nair',Department:'ME',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:80,Internal_Marks:15,External_Marks:55,Backlog:0,Total_Marks:70,Status:'Pass'},{Student_ID:'S006',Name:'Kavya Nair',Department:'ME',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:83,Internal_Marks:16,External_Marks:57,Backlog:0,Total_Marks:73,Status:'Pass'},{Student_ID:'S006',Name:'Kavya Nair',Department:'ME',Semester:3,Subject:'Microprocessors',Attendance_Percentage:79,Internal_Marks:15,External_Marks:54,Backlog:0,Total_Marks:69,Status:'Pass'},{Student_ID:'S007',Name:'Vikram More',Department:'ME',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:50,Internal_Marks:9,External_Marks:28,Backlog:1,Total_Marks:37,Status:'Fail'},{Student_ID:'S007',Name:'Vikram More',Department:'ME',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:48,Internal_Marks:8,External_Marks:25,Backlog:1,Total_Marks:33,Status:'Fail'},{Student_ID:'S007',Name:'Vikram More',Department:'ME',Semester:3,Subject:'Microprocessors',Attendance_Percentage:52,Internal_Marks:9,External_Marks:30,Backlog:1,Total_Marks:39,Status:'Fail'},{Student_ID:'S008',Name:'Pooja Sharma',Department:'ECE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:95,Internal_Marks:19,External_Marks:72,Backlog:0,Total_Marks:91,Status:'Pass'},{Student_ID:'S008',Name:'Pooja Sharma',Department:'ECE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:93,Internal_Marks:18,External_Marks:70,Backlog:0,Total_Marks:88,Status:'Pass'},{Student_ID:'S008',Name:'Pooja Sharma',Department:'ECE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:91,Internal_Marks:19,External_Marks:68,Backlog:0,Total_Marks:87,Status:'Pass'},{Student_ID:'S009',Name:'Nikhil Joshi',Department:'ECE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:65,Internal_Marks:12,External_Marks:42,Backlog:0,Total_Marks:54,Status:'Pass'},{Student_ID:'S009',Name:'Nikhil Joshi',Department:'ECE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:62,Internal_Marks:11,External_Marks:39,Backlog:0,Total_Marks:50,Status:'Pass'},{Student_ID:'S009',Name:'Nikhil Joshi',Department:'ECE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:68,Internal_Marks:12,External_Marks:44,Backlog:0,Total_Marks:56,Status:'Pass'},{Student_ID:'S010',Name:'Riya Mehta',Department:'CSE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:42,Internal_Marks:7,External_Marks:20,Backlog:1,Total_Marks:27,Status:'Fail'},{Student_ID:'S010',Name:'Riya Mehta',Department:'CSE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:38,Internal_Marks:6,External_Marks:18,Backlog:1,Total_Marks:24,Status:'Fail'},{Student_ID:'S010',Name:'Riya Mehta',Department:'CSE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:40,Internal_Marks:7,External_Marks:19,Backlog:1,Total_Marks:26,Status:'Fail'},{Student_ID:'S011',Name:'Arjun Tiwari',Department:'ECE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:88,Internal_Marks:17,External_Marks:63,Backlog:0,Total_Marks:80,Status:'Pass'},{Student_ID:'S011',Name:'Arjun Tiwari',Department:'ECE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:85,Internal_Marks:16,External_Marks:60,Backlog:0,Total_Marks:76,Status:'Pass'},{Student_ID:'S011',Name:'Arjun Tiwari',Department:'ECE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:90,Internal_Marks:18,External_Marks:66,Backlog:0,Total_Marks:84,Status:'Pass'},{Student_ID:'S012',Name:'Meera Iyer',Department:'ECE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:55,Internal_Marks:10,External_Marks:34,Backlog:0,Total_Marks:44,Status:'Pass'},{Student_ID:'S012',Name:'Meera Iyer',Department:'ECE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:52,Internal_Marks:9,External_Marks:31,Backlog:1,Total_Marks:40,Status:'Fail'},{Student_ID:'S012',Name:'Meera Iyer',Department:'ECE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:50,Internal_Marks:9,External_Marks:29,Backlog:1,Total_Marks:38,Status:'Fail'},{Student_ID:'S013',Name:'Suresh Rao',Department:'CSE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:72,Internal_Marks:13,External_Marks:49,Backlog:0,Total_Marks:62,Status:'Pass'},{Student_ID:'S013',Name:'Suresh Rao',Department:'CSE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:70,Internal_Marks:13,External_Marks:47,Backlog:0,Total_Marks:60,Status:'Pass'},{Student_ID:'S013',Name:'Suresh Rao',Department:'CSE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:75,Internal_Marks:14,External_Marks:51,Backlog:0,Total_Marks:65,Status:'Pass'},{Student_ID:'S014',Name:'Divya Patel',Department:'CSE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:35,Internal_Marks:6,External_Marks:15,Backlog:1,Total_Marks:21,Status:'Fail'},{Student_ID:'S014',Name:'Divya Patel',Department:'CSE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:30,Internal_Marks:5,External_Marks:12,Backlog:1,Total_Marks:17,Status:'Fail'},{Student_ID:'S014',Name:'Divya Patel',Department:'CSE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:33,Internal_Marks:5,External_Marks:14,Backlog:1,Total_Marks:19,Status:'Fail'},{Student_ID:'S015',Name:'Rahul Gupta',Department:'ME',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:82,Internal_Marks:16,External_Marks:57,Backlog:0,Total_Marks:73,Status:'Pass'},{Student_ID:'S015',Name:'Rahul Gupta',Department:'ME',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:78,Internal_Marks:15,External_Marks:54,Backlog:0,Total_Marks:69,Status:'Pass'},{Student_ID:'S015',Name:'Rahul Gupta',Department:'ME',Semester:4,Subject:'Microprocessors',Attendance_Percentage:80,Internal_Marks:15,External_Marks:56,Backlog:0,Total_Marks:71,Status:'Pass'},{Student_ID:'S016',Name:'Ananya Singh',Department:'ME',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:47,Internal_Marks:8,External_Marks:24,Backlog:1,Total_Marks:32,Status:'Fail'},{Student_ID:'S016',Name:'Ananya Singh',Department:'ME',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:45,Internal_Marks:7,External_Marks:22,Backlog:1,Total_Marks:29,Status:'Fail'},{Student_ID:'S016',Name:'Ananya Singh',Department:'ME',Semester:4,Subject:'Microprocessors',Attendance_Percentage:43,Internal_Marks:7,External_Marks:20,Backlog:1,Total_Marks:27,Status:'Fail'},{Student_ID:'S017',Name:'Kiran Jain',Department:'ECE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:90,Internal_Marks:18,External_Marks:67,Backlog:0,Total_Marks:85,Status:'Pass'},{Student_ID:'S017',Name:'Kiran Jain',Department:'ECE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:88,Internal_Marks:17,External_Marks:64,Backlog:0,Total_Marks:81,Status:'Pass'},{Student_ID:'S017',Name:'Kiran Jain',Department:'ECE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:92,Internal_Marks:18,External_Marks:69,Backlog:0,Total_Marks:87,Status:'Pass'},{Student_ID:'S018',Name:'Tanvi Bhatt',Department:'ECE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:63,Internal_Marks:11,External_Marks:40,Backlog:0,Total_Marks:51,Status:'Pass'},{Student_ID:'S018',Name:'Tanvi Bhatt',Department:'ECE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:60,Internal_Marks:10,External_Marks:37,Backlog:0,Total_Marks:47,Status:'Pass'},{Student_ID:'S018',Name:'Tanvi Bhatt',Department:'ECE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:65,Internal_Marks:12,External_Marks:42,Backlog:0,Total_Marks:54,Status:'Pass'},{Student_ID:'S019',Name:'Manish Verma',Department:'CSE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:25,Internal_Marks:4,External_Marks:8,Backlog:1,Total_Marks:12,Status:'Fail'},{Student_ID:'S019',Name:'Manish Verma',Department:'CSE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:22,Internal_Marks:3,External_Marks:6,Backlog:1,Total_Marks:9,Status:'Fail'},{Student_ID:'S019',Name:'Manish Verma',Department:'CSE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:28,Internal_Marks:4,External_Marks:10,Backlog:1,Total_Marks:14,Status:'Fail'},{Student_ID:'S020',Name:'Lakshmi Reddy',Department:'ME',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:77,Internal_Marks:14,External_Marks:53,Backlog:0,Total_Marks:67,Status:'Pass'},{Student_ID:'S020',Name:'Lakshmi Reddy',Department:'ME',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:75,Internal_Marks:14,External_Marks:51,Backlog:0,Total_Marks:65,Status:'Pass'},{Student_ID:'S020',Name:'Lakshmi Reddy',Department:'ME',Semester:4,Subject:'Microprocessors',Attendance_Percentage:73,Internal_Marks:13,External_Marks:49,Backlog:0,Total_Marks:62,Status:'Pass'},{Student_ID:'S021',Name:'Siddharth Kumar',Department:'ECE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:85,Internal_Marks:16,External_Marks:60,Backlog:0,Total_Marks:76,Status:'Pass'},{Student_ID:'S021',Name:'Siddharth Kumar',Department:'ECE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:80,Internal_Marks:15,External_Marks:57,Backlog:0,Total_Marks:72,Status:'Pass'},{Student_ID:'S021',Name:'Siddharth Kumar',Department:'ECE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:83,Internal_Marks:16,External_Marks:59,Backlog:0,Total_Marks:75,Status:'Pass'},{Student_ID:'S022',Name:'Nisha Agarwal',Department:'CSE',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:57,Internal_Marks:10,External_Marks:35,Backlog:0,Total_Marks:45,Status:'Pass'},{Student_ID:'S022',Name:'Nisha Agarwal',Department:'CSE',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:53,Internal_Marks:9,External_Marks:32,Backlog:0,Total_Marks:41,Status:'Pass'},{Student_ID:'S022',Name:'Nisha Agarwal',Department:'CSE',Semester:3,Subject:'Microprocessors',Attendance_Percentage:55,Internal_Marks:10,External_Marks:34,Backlog:0,Total_Marks:44,Status:'Pass'},{Student_ID:'S023',Name:'Deepak Yadav',Department:'ME',Semester:3,Subject:'Digital Electronics',Attendance_Percentage:70,Internal_Marks:13,External_Marks:47,Backlog:0,Total_Marks:60,Status:'Pass'},{Student_ID:'S023',Name:'Deepak Yadav',Department:'ME',Semester:3,Subject:'Signals & Systems',Attendance_Percentage:68,Internal_Marks:12,External_Marks:45,Backlog:0,Total_Marks:57,Status:'Pass'},{Student_ID:'S023',Name:'Deepak Yadav',Department:'ME',Semester:3,Subject:'Microprocessors',Attendance_Percentage:72,Internal_Marks:13,External_Marks:48,Backlog:0,Total_Marks:61,Status:'Pass'},{Student_ID:'S024',Name:'Shweta Pandey',Department:'ECE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:91,Internal_Marks:18,External_Marks:66,Backlog:0,Total_Marks:84,Status:'Pass'},{Student_ID:'S024',Name:'Shweta Pandey',Department:'ECE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:89,Internal_Marks:17,External_Marks:63,Backlog:0,Total_Marks:80,Status:'Pass'},{Student_ID:'S024',Name:'Shweta Pandey',Department:'ECE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:93,Internal_Marks:19,External_Marks:70,Backlog:0,Total_Marks:89,Status:'Pass'},{Student_ID:'S025',Name:'Rajesh Mishra',Department:'CSE',Semester:4,Subject:'Digital Electronics',Attendance_Percentage:44,Internal_Marks:7,External_Marks:21,Backlog:1,Total_Marks:28,Status:'Fail'},{Student_ID:'S025',Name:'Rajesh Mishra',Department:'CSE',Semester:4,Subject:'Signals & Systems',Attendance_Percentage:40,Internal_Marks:6,External_Marks:18,Backlog:1,Total_Marks:24,Status:'Fail'},{Student_ID:'S025',Name:'Rajesh Mishra',Department:'CSE',Semester:4,Subject:'Microprocessors',Attendance_Percentage:42,Internal_Marks:7,External_Marks:20,Backlog:1,Total_Marks:27,Status:'Fail'}];
 
-// ─── CHART INSTANCES ──────────────────────────────────────────────────────
-let charts = {};
-
+let charts={},currentStudents=[],allStudents=[],currentData=null;
 function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
 
-// ─── ANALYSIS ENGINE ──────────────────────────────────────────────────────
-function analyze(rows){
-  const numRows = rows.map(r=>({
-    ...r,
-    Attendance_Percentage: parseFloat(r.Attendance_Percentage)||0,
-    Internal_Marks: parseFloat(r.Internal_Marks)||0,
-    External_Marks: parseFloat(r.External_Marks)||0,
-    Total_Marks: parseFloat(r.Total_Marks)||(parseFloat(r.Internal_Marks)+parseFloat(r.External_Marks))||0,
-    Backlog: parseInt(r.Backlog)||0,
-  }));
-
-  // Pearson correlation
-  const n = numRows.length;
-  const xs = numRows.map(r=>r.Attendance_Percentage);
-  const ys = numRows.map(r=>r.Total_Marks);
-  const mx = xs.reduce((a,b)=>a+b,0)/n, my = ys.reduce((a,b)=>a+b,0)/n;
-  const num = xs.reduce((s,x,i)=>s+(x-mx)*(ys[i]-my),0);
-  const den = Math.sqrt(xs.reduce((s,x)=>s+(x-mx)**2,0)*ys.reduce((s,y)=>s+(y-my)**2,0));
-  const corr = (num/den).toFixed(4);
-
-  // KPIs
-  const ids = [...new Set(numRows.map(r=>r.Student_ID))];
-  const totalStudents = ids.length;
-  const passCount = numRows.filter(r=>r.Status==='Pass').length;
-  const failCount = numRows.filter(r=>r.Status==='Fail').length;
-  const passRate = (passCount/numRows.length*100).toFixed(1);
-  const totalBacklogs = numRows.reduce((s,r)=>s+r.Backlog,0);
-  const avgAtt = (xs.reduce((a,b)=>a+b,0)/n).toFixed(1);
-
-  // Per-student aggregates
-  const byStudent = {};
-  numRows.forEach(r=>{
-    if(!byStudent[r.Student_ID]) byStudent[r.Student_ID]={id:r.Student_ID,name:r.Name,dept:r.Department,sem:r.Semester,atts:[],marks:[],backlogs:0};
-    byStudent[r.Student_ID].atts.push(r.Attendance_Percentage);
-    byStudent[r.Student_ID].marks.push(r.Total_Marks);
-    byStudent[r.Student_ID].backlogs+=r.Backlog;
-  });
-  const students = Object.values(byStudent).map(s=>({
-    ...s,
-    avgAtt: s.atts.reduce((a,b)=>a+b,0)/s.atts.length,
-    avgMarks: s.marks.reduce((a,b)=>a+b,0)/s.marks.length,
-  }));
-
-  // Dept
-  const depts = [...new Set(numRows.map(r=>r.Department))];
-  const deptData = depts.map(d=>{
-    const dr = numRows.filter(r=>r.Department===d);
-    return {dept:d, avgAtt:dr.reduce((s,r)=>s+r.Attendance_Percentage,0)/dr.length, backlogs:dr.reduce((s,r)=>s+r.Backlog,0)};
-  }).sort((a,b)=>b.avgAtt-a.avgAtt);
-
-  // Subjects
-  const subjs = [...new Set(numRows.map(r=>r.Subject))];
-  const subjData = subjs.map(s=>{
-    const sr = numRows.filter(r=>r.Subject===s);
-    return {subj:s, avgMarks:sr.reduce((a,b)=>a+b.Total_Marks,0)/sr.length};
-  }).sort((a,b)=>b.avgMarks-a.avgMarks);
-
-  // Attendance categories
-  function attCat(a){return a>=85?'High (≥85%)':a>=65?'Medium (65-84%)':'Low (<65%)'}
-  const cats = ['High (≥85%)','Medium (65-84%)','Low (<65%)'];
-  const catData = cats.map(c=>{
-    const cr = numRows.filter(r=>attCat(r.Attendance_Percentage)===c);
-    const pass = cr.filter(r=>r.Status==='Pass').length;
-    return {cat:c, total:cr.length, pass, backlogs:cr.reduce((s,r)=>s+r.Backlog,0),
-      passRate:cr.length?(pass/cr.length*100).toFixed(0):0};
-  });
-
-  // Semesters
-  const sems = [...new Set(numRows.map(r=>r.Semester))].sort();
-  const semData = sems.map(s=>{
-    const sr = numRows.filter(r=>r.Semester==s);
-    return {sem:s, avgAtt:(sr.reduce((a,b)=>a+b.Attendance_Percentage,0)/sr.length).toFixed(1),
-      avgMarks:(sr.reduce((a,b)=>a+b.Total_Marks,0)/sr.length).toFixed(1)};
-  });
-
-  // Backlog by subj & cat
-  const backlogByCat = subjs.map(sub=>{
-    const sr = numRows.filter(r=>r.Subject===sub);
-    return {subj:sub, low:sr.filter(r=>attCat(r.Attendance_Percentage)==='Low (<65%)').reduce((s,r)=>s+r.Backlog,0),
-      med:sr.filter(r=>attCat(r.Attendance_Percentage)==='Medium (65-84%)').reduce((s,r)=>s+r.Backlog,0),
-      high:sr.filter(r=>attCat(r.Attendance_Percentage)==='High (≥85%)').reduce((s,r)=>s+r.Backlog,0)};
-  });
-
-  return {corr,totalStudents,passCount,failCount,passRate,totalBacklogs,avgAtt,
-    students,deptData,subjData,catData,semData,backlogByCat,numRows,subjs};
+// FEATURE 3: THEME TOGGLE
+function toggleTheme(){
+  const html=document.documentElement;
+  const isDark=html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('themeBtn').textContent=isDark?'☀️':'🌙';
+  if(currentData)render(currentData);
 }
 
-// ─── RENDER ───────────────────────────────────────────────────────────────
-let currentStudents = [];
+// FEATURE 1: SEARCH
+function handleSearch(val){
+  const dd=document.getElementById('searchDropdown');
+  if(!val.trim()||allStudents.length===0){dd.style.display='none';return;}
+  const q=val.toLowerCase();
+  const matches=allStudents.filter(s=>s.name.toLowerCase().includes(q)||s.id.toLowerCase().includes(q)).slice(0,6);
+  if(matches.length===0){
+    dd.innerHTML=`<div class="search-no">No student found for "${val}"</div>`;
+  } else {
+    dd.innerHTML=matches.map(s=>`
+      <div class="search-item" onclick="openReport('${s.id}')">
+        <div class="search-item-left">
+          <strong>${s.name}</strong>
+          <span>${s.id} · ${s.dept} · Sem ${s.sem}</span>
+        </div>
+        <span class="badge ${s.backlogs>0?'fail':'pass'}">${s.backlogs>0?s.backlogs+' backlog':'All pass'}</span>
+      </div>`).join('');
+  }
+  dd.style.display='block';
+}
+document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))document.getElementById('searchDropdown').style.display='none';});
+
+// FEATURE 2: REPORT CARD MODAL
+function openReport(sid){
+  document.getElementById('searchDropdown').style.display='none';
+  document.getElementById('searchInput').value='';
+  const s=allStudents.find(x=>x.id===sid);
+  if(!s)return;
+  const ringColor=s.backlogs>0?'#EF4444':s.avgAtt>=85?'#22C55E':'#F59E0B';
+  const initials=s.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const subjsHTML=s.subjects.map(sub=>`
+    <div class="subject-row">
+      <span class="subj-name">${sub.Subject}</span>
+      <span class="subj-att">${sub.Attendance_Percentage}%</span>
+      <span class="subj-marks" style="color:${sub.Status==='Pass'?'#22C55E':'#EF4444'}">${sub.Total_Marks}</span>
+      <span class="badge ${sub.Status.toLowerCase()}">${sub.Status}</span>
+    </div>`).join('');
+  document.getElementById('modalBody').innerHTML=`
+    <div class="report-hero">
+      <div class="student-avatar">${initials}</div>
+      <div class="report-hero-info">
+        <h4>${s.name}</h4>
+        <p>${s.id} · ${s.dept} · Semester ${s.sem}</p>
+      </div>
+      <div style="margin-left:auto">
+        <div class="score-circle" style="border-color:${ringColor}">
+          <span class="sc-val" style="color:${ringColor}">${s.avgMarks.toFixed(1)}</span>
+          <span class="sc-lbl">Avg Marks</span>
+        </div>
+      </div>
+    </div>
+    <div class="stat-pills">
+      <div class="stat-pill"><div class="sp-val">${s.avgAtt.toFixed(1)}%</div><div class="sp-lbl">Avg Attendance</div></div>
+      <div class="stat-pill"><div class="sp-val" style="color:${s.backlogs>0?'#EF4444':'#22C55E'}">${s.backlogs}</div><div class="sp-lbl">Backlogs</div></div>
+      <div class="stat-pill"><div class="sp-val">${s.subjects.length}</div><div class="sp-lbl">Subjects</div></div>
+    </div>
+    <div class="section-label" style="margin-bottom:.75rem">Subject Performance</div>
+    ${subjsHTML}
+    <div style="background:${s.avgAtt<75?'rgba(239,68,68,.08)':'rgba(34,197,94,.08)'};border:1px solid ${s.avgAtt<75?'rgba(239,68,68,.2)':'rgba(34,197,94,.2)'};border-radius:var(--radius);padding:.75rem 1rem;margin-top:1rem;font-size:13px;color:${s.avgAtt<75?'#f87171':'#4ade80'}">
+      ${s.avgAtt<75?'⚠️ Attendance is <strong>'+s.avgAtt.toFixed(1)+'%</strong> — below 75% threshold. Needs immediate improvement.':'✅ Attendance is <strong>'+s.avgAtt.toFixed(1)+'%</strong> — above 75% threshold. Great work!'}
+    </div>`;
+  document.getElementById('reportModal').classList.add('open');
+}
+function closeModal(){document.getElementById('reportModal').classList.remove('open')}
+function closeModalOutside(e){if(e.target.id==='reportModal')closeModal()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+// FEATURE 4: EXPORT EXCEL
+function exportExcel(){
+  if(!currentData){alert('Pehle CSV upload karo!');return;}
+  const ws=XLSX.utils.json_to_sheet(currentData.numRows);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Raw Data');
+  const summary=currentData.students.map(s=>({Student_ID:s.id,Name:s.name,Department:s.dept,Semester:s.sem,Avg_Attendance:s.avgAtt.toFixed(1)+'%',Avg_Marks:s.avgMarks.toFixed(1),Backlogs:s.backlogs,Status:s.backlogs>0?'At Risk':'OK'}));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(summary),'Student Summary');
+  XLSX.writeFile(wb,'AttendanceIQ_Report.xlsx');
+}
+
+// FEATURE 4: EXPORT PDF
+function exportPDF(){
+  if(!currentData){alert('Pehle CSV upload karo!');return;}
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF();
+  const d=currentData;
+  doc.setFillColor(31,78,121);doc.rect(0,0,210,28,'F');
+  doc.setTextColor(255,255,255);doc.setFontSize(16);doc.setFont('helvetica','bold');
+  doc.text('AttendanceIQ — Analysis Report',14,12);
+  doc.setFontSize(9);doc.setFont('helvetica','normal');
+  doc.text('P.E.S. College of Engineering | Guide: Prof. J.P. Zine',14,20);
+  doc.text('Generated: '+new Date().toLocaleDateString('en-IN'),150,20);
+  doc.setTextColor(30,30,30);doc.setFontSize(13);doc.setFont('helvetica','bold');
+  doc.text('Summary Statistics',14,38);
+  doc.setDrawColor(220,220,220);doc.line(14,40,196,40);
+  const kpis=[['Total Students',d.totalStudents],['Total Records',d.numRows.length],['Pass Rate',d.passRate+'%'],['Total Backlogs',d.totalBacklogs],['Avg Attendance',d.avgAtt+'%'],['Pearson r',d.corr]];
+  doc.setFontSize(10);
+  kpis.forEach(([k,v],i)=>{const x=i%2===0?14:110,y=48+Math.floor(i/2)*10;doc.setFont('helvetica','bold');doc.text(k+':',x,y);doc.setFont('helvetica','normal');doc.text(String(v),x+50,y);});
+  doc.setFontSize(13);doc.setFont('helvetica','bold');doc.text('At-Risk Students (Attendance < 75%)',14,82);
+  doc.line(14,84,196,84);
+  const riskS=d.students.filter(s=>s.avgAtt<75).sort((a,b)=>a.avgAtt-b.avgAtt);
+  let y=92;
+  doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setFillColor(31,78,121);doc.rect(14,y-5,182,8,'F');
+  doc.setTextColor(255,255,255);
+  ['ID','Name','Dept','Sem','Avg Att','Avg Marks','Backlogs'].forEach((h,i)=>{doc.text(h,[14,32,70,96,110,132,158][i],y);});
+  doc.setTextColor(30,30,30);doc.setFont('helvetica','normal');
+  riskS.forEach((s,i)=>{
+    y+=9;if(y>270){doc.addPage();y=20;}
+    if(i%2===0){doc.setFillColor(240,245,255);doc.rect(14,y-5,182,8,'F');}
+    [s.id,s.name.slice(0,16),s.dept,s.sem,s.avgAtt.toFixed(1)+'%',s.avgMarks.toFixed(1),s.backlogs].forEach((v,ci)=>doc.text(String(v),[14,32,70,96,110,132,158][ci],y));
+  });
+  doc.setFontSize(8);doc.setTextColor(150,150,150);
+  doc.text('AttendanceIQ | Krushna Sanjay Jadhav | PRN: 24021341844507',14,285);
+  doc.save('AttendanceIQ_Report.pdf');
+}
+
+// ANALYSIS
+function analyze(rows){
+  const nr=rows.map(r=>({...r,Attendance_Percentage:parseFloat(r.Attendance_Percentage)||0,Internal_Marks:parseFloat(r.Internal_Marks)||0,External_Marks:parseFloat(r.External_Marks)||0,Total_Marks:parseFloat(r.Total_Marks)||(parseFloat(r.Internal_Marks)+parseFloat(r.External_Marks))||0,Backlog:parseInt(r.Backlog)||0,Semester:parseInt(r.Semester)||0}));
+  const n=nr.length,xs=nr.map(r=>r.Attendance_Percentage),ys=nr.map(r=>r.Total_Marks);
+  const mx=xs.reduce((a,b)=>a+b,0)/n,my=ys.reduce((a,b)=>a+b,0)/n;
+  const num=xs.reduce((s,x,i)=>s+(x-mx)*(ys[i]-my),0);
+  const den=Math.sqrt(xs.reduce((s,x)=>s+(x-mx)**2,0)*ys.reduce((s,y)=>s+(y-my)**2,0));
+  const corr=(num/den).toFixed(4);
+  const ids=[...new Set(nr.map(r=>r.Student_ID))];
+  const passCount=nr.filter(r=>r.Status==='Pass').length,failCount=nr.filter(r=>r.Status==='Fail').length;
+  const passRate=(passCount/n*100).toFixed(1),totalBacklogs=nr.reduce((s,r)=>s+r.Backlog,0);
+  const avgAtt=(xs.reduce((a,b)=>a+b,0)/n).toFixed(1);
+  const byS={};
+  nr.forEach(r=>{if(!byS[r.Student_ID])byS[r.Student_ID]={id:r.Student_ID,name:r.Name,dept:r.Department,sem:r.Semester,atts:[],marks:[],backlogs:0,subjects:[]};byS[r.Student_ID].atts.push(r.Attendance_Percentage);byS[r.Student_ID].marks.push(r.Total_Marks);byS[r.Student_ID].backlogs+=r.Backlog;byS[r.Student_ID].subjects.push(r);});
+  const students=Object.values(byS).map(s=>({...s,avgAtt:s.atts.reduce((a,b)=>a+b,0)/s.atts.length,avgMarks:s.marks.reduce((a,b)=>a+b,0)/s.marks.length}));
+  const depts=[...new Set(nr.map(r=>r.Department))];
+  const deptData=depts.map(d=>{const dr=nr.filter(r=>r.Department===d);return{dept:d,avgAtt:dr.reduce((s,r)=>s+r.Attendance_Percentage,0)/dr.length,backlogs:dr.reduce((s,r)=>s+r.Backlog,0)};}).sort((a,b)=>b.avgAtt-a.avgAtt);
+  const subjs=[...new Set(nr.map(r=>r.Subject))];
+  const subjData=subjs.map(s=>{const sr=nr.filter(r=>r.Subject===s);return{subj:s,avgMarks:sr.reduce((a,b)=>a+b.Total_Marks,0)/sr.length};}).sort((a,b)=>b.avgMarks-a.avgMarks);
+  function ac(a){return a>=85?'High (≥85%)':a>=65?'Medium (65-84%)':'Low (<65%)'}
+  const cats=['High (≥85%)','Medium (65-84%)','Low (<65%)'];
+  const catData=cats.map(c=>{const cr=nr.filter(r=>ac(r.Attendance_Percentage)===c),pass=cr.filter(r=>r.Status==='Pass').length;return{cat:c,total:cr.length,pass,backlogs:cr.reduce((s,r)=>s+r.Backlog,0),passRate:cr.length?(pass/cr.length*100).toFixed(0):0};});
+  const sems=[...new Set(nr.map(r=>r.Semester))].sort();
+  const semData=sems.map(s=>{const sr=nr.filter(r=>r.Semester===s);return{sem:s,avgAtt:(sr.reduce((a,b)=>a+b.Attendance_Percentage,0)/sr.length).toFixed(1),avgMarks:(sr.reduce((a,b)=>a+b.Total_Marks,0)/sr.length).toFixed(1)};});
+  const backlogByCat=subjs.map(sub=>{const sr=nr.filter(r=>r.Subject===sub);return{subj:sub,low:sr.filter(r=>ac(r.Attendance_Percentage)==='Low (<65%)').reduce((s,r)=>s+r.Backlog,0),med:sr.filter(r=>ac(r.Attendance_Percentage)==='Medium (65-84%)').reduce((s,r)=>s+r.Backlog,0),high:sr.filter(r=>ac(r.Attendance_Percentage)==='High (≥85%)').reduce((s,r)=>s+r.Backlog,0)};});
+  return{corr,totalStudents:ids.length,passCount,failCount,passRate,totalBacklogs,avgAtt,students,deptData,subjData,catData,semData,backlogByCat,numRows:nr,subjs};
+}
 
 function render(data){
-  const {corr,totalStudents,passCount,failCount,passRate,totalBacklogs,avgAtt,
-    students,deptData,subjData,catData,semData,backlogByCat,numRows,subjs} = data;
-
-  // KPIs
-  document.getElementById('corrDisplay').textContent = corr;
-  document.getElementById('kpiStudents').textContent = totalStudents;
-  document.getElementById('kpiPass').textContent = passRate+'%';
-  document.getElementById('kpiPassDetail').textContent = `${passCount} pass / ${failCount} fail`;
-  document.getElementById('kpiBacklogs').textContent = totalBacklogs;
-  document.getElementById('kpiBacklogDetail').textContent = `across ${numRows.length} records`;
-  document.getElementById('kpiAtt').textContent = avgAtt+'%';
-  document.getElementById('statusPill').textContent = `${totalStudents} students · ${numRows.length} records`;
-  document.getElementById('statusPill').className = 'status-pill loaded';
-
-  // Scatter
+  currentData=data;
+  const{corr,totalStudents,passCount,failCount,passRate,totalBacklogs,avgAtt,students,deptData,subjData,catData,semData,backlogByCat,numRows,subjs}=data;
+  allStudents=students;
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  const gc=isDark?'rgba(255,255,255,0.05)':'rgba(0,0,0,0.07)';
+  const tc=isDark?'#8B97B5':'#4A5568';
+  document.getElementById('corrDisplay').textContent=corr;
+  document.getElementById('kpiStudents').textContent=totalStudents;
+  document.getElementById('kpiPass').textContent=passRate+'%';
+  document.getElementById('kpiPassDetail').textContent=`${passCount} pass / ${failCount} fail`;
+  document.getElementById('kpiBacklogs').textContent=totalBacklogs;
+  document.getElementById('kpiBacklogDetail').textContent=`across ${numRows.length} records`;
+  document.getElementById('kpiAtt').textContent=avgAtt+'%';
+  document.getElementById('kpiRecords').textContent=`${numRows.length} subject records`;
+  document.getElementById('statusPill').textContent=`${totalStudents} students · ${numRows.length} records`;
+  document.getElementById('statusPill').className='status-pill loaded';
   destroyChart('scatter');
-  charts.scatter = new Chart(document.getElementById('scatterChart'),{
-    type:'scatter',
-    data:{datasets:[
-      {label:'Pass',data:numRows.filter(r=>r.Status==='Pass').map(r=>({x:r.Attendance_Percentage,y:r.Total_Marks})),
-        backgroundColor:'rgba(34,197,94,0.6)',pointRadius:5,pointStyle:'circle'},
-      {label:'Fail',data:numRows.filter(r=>r.Status==='Fail').map(r=>({x:r.Attendance_Percentage,y:r.Total_Marks})),
-        backgroundColor:'rgba(239,68,68,0.75)',pointRadius:5,pointStyle:'triangle'},
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:d=>`Att: ${d.raw.x}% | Marks: ${d.raw.y}`}}},
-      scales:{
-        x:{min:0,max:100,title:{display:true,text:'Attendance %',color:'#8B97B5'},
-          grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#8B97B5'}},
-        y:{min:0,max:100,title:{display:true,text:'Total Marks',color:'#8B97B5'},
-          grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#8B97B5'}},
-      }
-    }
-  });
-
-  // Dept bars
-  const maxAtt = Math.max(...deptData.map(d=>d.avgAtt));
-  const deptColors = ['#3B82F6','#22C55E','#F59E0B','#8B5CF6','#14B8A6'];
-  document.getElementById('deptBars').innerHTML = deptData.map((d,i)=>`
-    <div class="dept-row">
-      <span class="dept-name">${d.dept}</span>
-      <div class="dept-bar-outer"><div class="dept-bar-inner" style="width:${(d.avgAtt/100*100).toFixed(1)}%;background:${deptColors[i%deptColors.length]}"></div></div>
-      <span class="dept-pct">${d.avgAtt.toFixed(0)}%</span>
-    </div>`).join('');
-
-  // Pie
-  destroyChart('pie');
-  charts.pie = new Chart(document.getElementById('pieChart'),{
-    type:'doughnut',
-    data:{labels:deptData.map(d=>d.dept), datasets:[{data:deptData.map(d=>d.backlogs),
-      backgroundColor:deptColors.slice(0,deptData.length),borderWidth:0}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',
-      plugins:{legend:{position:'right',labels:{color:'#8B97B5',font:{size:11},boxWidth:10,padding:8}}}}
-  });
-
-  // Att category chart
-  destroyChart('attCat');
-  charts.attCat = new Chart(document.getElementById('attCatChart'),{
-    type:'bar',
-    data:{labels:catData.map(c=>c.cat.replace('≥','≥').replace('(','').replace(')','').split(' ')[0]),
-      datasets:[{label:'Pass Rate %',data:catData.map(c=>c.passRate),
-        backgroundColor:['rgba(239,68,68,.25)','rgba(245,158,11,.25)','rgba(34,197,94,.25)'],
-        borderColor:['#EF4444','#F59E0B','#22C55E'],borderWidth:1.5,borderRadius:6}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{grid:{display:false},ticks:{color:'#8B97B5',font:{size:11}}},
-        y:{max:110,grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#8B97B5',callback:v=>v+'%'}}}}
-  });
-
-  // Subject chart
-  destroyChart('subject');
-  charts.subject = new Chart(document.getElementById('subjectChart'),{
-    type:'bar',
-    data:{labels:subjData.map(s=>s.subj.replace('& ','&\n')),
-      datasets:[{data:subjData.map(s=>parseFloat(s.avgMarks.toFixed(1))),
-        backgroundColor:['#3B82F6','#6366F1','#8B5CF6'],borderRadius:4,borderWidth:0}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#8B97B5'},min:0},
-        y:{grid:{display:false},ticks:{color:'#8B97B5',font:{size:11}}}}}
-  });
-
-  // Semester chart
-  destroyChart('sem');
-  charts.sem = new Chart(document.getElementById('semChart'),{
-    type:'bar',
-    data:{labels:semData.map(s=>'Sem '+s.sem),
-      datasets:[
-        {label:'Avg Attendance',data:semData.map(s=>parseFloat(s.avgAtt)),backgroundColor:'rgba(59,130,246,.5)',borderColor:'#3B82F6',borderWidth:1.5,borderRadius:4},
-        {label:'Avg Marks',data:semData.map(s=>parseFloat(s.avgMarks)),backgroundColor:'rgba(34,197,94,.4)',borderColor:'#22C55E',borderWidth:1.5,borderRadius:4},
-      ]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{labels:{color:'#8B97B5',font:{size:11},boxWidth:10}}},
-      scales:{x:{grid:{display:false},ticks:{color:'#8B97B5'}},
-        y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#8B97B5'}}}}
-  });
-
-  // Backlog grouped chart
-  destroyChart('backlog');
-  charts.backlog = new Chart(document.getElementById('backlogChart'),{
-    type:'bar',
-    data:{labels:backlogByCat.map(b=>b.subj),
-      datasets:[
-        {label:'Low (<65%)',data:backlogByCat.map(b=>b.low),backgroundColor:'rgba(239,68,68,.6)',borderRadius:3},
-        {label:'Medium',data:backlogByCat.map(b=>b.med),backgroundColor:'rgba(245,158,11,.6)',borderRadius:3},
-        {label:'High (≥85%)',data:backlogByCat.map(b=>b.high),backgroundColor:'rgba(34,197,94,.5)',borderRadius:3},
-      ]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{labels:{color:'#8B97B5',font:{size:11},boxWidth:10}}},
-      scales:{x:{stacked:false,grid:{display:false},ticks:{color:'#8B97B5',font:{size:10}}},
-        y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#8B97B5',stepSize:1}}}}
-  });
-
-  // Category table
-  const catColors = [['rgba(34,197,94,.12)','#4ade80'],['rgba(245,158,11,.1)','#fbbf24'],['rgba(239,68,68,.12)','#f87171']];
-  document.getElementById('catTableBody').innerHTML = catData.map((c,i)=>`
-    <tr>
-      <td style="font-size:12px;color:${catColors[i][1]}">${c.cat}</td>
-      <td style="font-family:var(--mono)">${c.total}</td>
-      <td style="font-family:var(--mono);color:${catColors[i][1]}">${c.passRate}%</td>
-      <td style="font-family:var(--mono)">${c.backlogs}</td>
-    </tr>`).join('');
-
-  // At-risk table
-  currentStudents = students.sort((a,b)=>a.avgAtt-b.avgAtt);
-  renderRisk('all', null);
+  charts.scatter=new Chart(document.getElementById('scatterChart'),{type:'scatter',data:{datasets:[{label:'Pass',data:numRows.filter(r=>r.Status==='Pass').map(r=>({x:r.Attendance_Percentage,y:r.Total_Marks})),backgroundColor:'rgba(34,197,94,0.6)',pointRadius:5,pointStyle:'circle'},{label:'Fail',data:numRows.filter(r=>r.Status==='Fail').map(r=>({x:r.Attendance_Percentage,y:r.Total_Marks})),backgroundColor:'rgba(239,68,68,0.75)',pointRadius:5,pointStyle:'triangle'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:d=>`Att: ${d.raw.x}% | Marks: ${d.raw.y}`}}},scales:{x:{min:0,max:100,title:{display:true,text:'Attendance %',color:tc},grid:{color:gc},ticks:{color:tc}},y:{min:0,max:100,title:{display:true,text:'Total Marks',color:tc},grid:{color:gc},ticks:{color:tc}}}}});
+  const dc=['#3B82F6','#22C55E','#F59E0B','#8B5CF6','#14B8A6'];
+  document.getElementById('deptBars').innerHTML=deptData.map((d,i)=>`<div class="dept-row"><span class="dept-name">${d.dept}</span><div class="dept-bar-outer"><div class="dept-bar-inner" style="width:${d.avgAtt.toFixed(0)}%;background:${dc[i%dc.length]}"></div></div><span class="dept-pct">${d.avgAtt.toFixed(0)}%</span></div>`).join('');
+  destroyChart('pie');charts.pie=new Chart(document.getElementById('pieChart'),{type:'doughnut',data:{labels:deptData.map(d=>d.dept),datasets:[{data:deptData.map(d=>d.backlogs),backgroundColor:dc.slice(0,deptData.length),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'right',labels:{color:tc,font:{size:11},boxWidth:10,padding:8}}}}});
+  destroyChart('attCat');charts.attCat=new Chart(document.getElementById('attCatChart'),{type:'bar',data:{labels:['Low','Medium','High'],datasets:[{data:catData.map(c=>c.passRate),backgroundColor:['rgba(239,68,68,.25)','rgba(245,158,11,.25)','rgba(34,197,94,.25)'],borderColor:['#EF4444','#F59E0B','#22C55E'],borderWidth:1.5,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:tc}},y:{max:110,grid:{color:gc},ticks:{color:tc,callback:v=>v+'%'}}}}});
+  destroyChart('subject');charts.subject=new Chart(document.getElementById('subjectChart'),{type:'bar',data:{labels:subjData.map(s=>s.subj),datasets:[{data:subjData.map(s=>parseFloat(s.avgMarks.toFixed(1))),backgroundColor:['#3B82F6','#6366F1','#8B5CF6'],borderRadius:4,borderWidth:0}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:tc},min:0},y:{grid:{display:false},ticks:{color:tc,font:{size:11}}}}}});
+  destroyChart('sem');charts.sem=new Chart(document.getElementById('semChart'),{type:'bar',data:{labels:semData.map(s=>'Sem '+s.sem),datasets:[{label:'Avg Attendance',data:semData.map(s=>parseFloat(s.avgAtt)),backgroundColor:'rgba(59,130,246,.5)',borderColor:'#3B82F6',borderWidth:1.5,borderRadius:4},{label:'Avg Marks',data:semData.map(s=>parseFloat(s.avgMarks)),backgroundColor:'rgba(34,197,94,.4)',borderColor:'#22C55E',borderWidth:1.5,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tc,font:{size:11},boxWidth:10}}},scales:{x:{grid:{display:false},ticks:{color:tc}},y:{grid:{color:gc},ticks:{color:tc}}}}});
+  destroyChart('backlog');charts.backlog=new Chart(document.getElementById('backlogChart'),{type:'bar',data:{labels:backlogByCat.map(b=>b.subj),datasets:[{label:'Low (<65%)',data:backlogByCat.map(b=>b.low),backgroundColor:'rgba(239,68,68,.6)',borderRadius:3},{label:'Medium',data:backlogByCat.map(b=>b.med),backgroundColor:'rgba(245,158,11,.6)',borderRadius:3},{label:'High',data:backlogByCat.map(b=>b.high),backgroundColor:'rgba(34,197,94,.5)',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tc,font:{size:11},boxWidth:10}}},scales:{x:{grid:{display:false},ticks:{color:tc,font:{size:10}}},y:{grid:{color:gc},ticks:{color:tc,stepSize:1}}}}});
+  const cc=[['rgba(34,197,94,.12)','#4ade80'],['rgba(245,158,11,.1)','#fbbf24'],['rgba(239,68,68,.12)','#f87171']];
+  document.getElementById('catTableBody').innerHTML=catData.map((c,i)=>`<tr><td style="font-size:12px;color:${cc[i][1]}">${c.cat}</td><td style="font-family:var(--mono)">${c.total}</td><td style="font-family:var(--mono);color:${cc[i][1]}">${c.passRate}%</td><td style="font-family:var(--mono)">${c.backlogs}</td></tr>`).join('');
+  currentStudents=students.sort((a,b)=>a.avgAtt-b.avgAtt);
+  renderRisk('all',null);
 }
 
-function renderRisk(type, btn){
+function renderRisk(type,btn){
   if(btn){document.querySelectorAll('#riskTabs .tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');}
-  let data = currentStudents;
-  if(type==='critical') data = data.filter(s=>s.avgAtt<40);
-  else if(type==='atrisk') data = data.filter(s=>s.avgAtt>=40&&s.avgAtt<65);
-  else if(type==='watch') data = data.filter(s=>s.avgAtt>=65&&s.avgAtt<75);
-  document.getElementById('riskBody').innerHTML = data.map(s=>{
-    const critical = s.avgAtt<40, atrisk=s.avgAtt<65, watch=s.avgAtt<75;
-    const attCls = critical?'low':atrisk?'med':watch?'med':'high';
-    const statusCls = s.backlogs>0?'fail':'pass';
-    const bg = critical?'rgba(239,68,68,.05)':atrisk?'rgba(245,158,11,.04)':'';
+  let data=currentStudents;
+  if(type==='critical')data=data.filter(s=>s.avgAtt<40);
+  else if(type==='atrisk')data=data.filter(s=>s.avgAtt>=40&&s.avgAtt<65);
+  else if(type==='watch')data=data.filter(s=>s.avgAtt>=65&&s.avgAtt<75);
+  document.getElementById('riskBody').innerHTML=data.map(s=>{
+    const cr=s.avgAtt<40,ar=s.avgAtt<65,w=s.avgAtt<75;
+    const ac=cr?'low':ar?'med':w?'med':'high';
+    const bg=cr?'rgba(239,68,68,.05)':ar?'rgba(245,158,11,.04)':'';
     return `<tr style="background:${bg}">
-      <td><strong style="font-size:13px">${s.name}</strong></td>
+      <td><strong>${s.name}</strong></td>
       <td style="font-family:var(--mono);font-size:12px;color:var(--txt3)">${s.id}</td>
       <td><span class="badge dept">${s.dept}</span></td>
       <td style="font-family:var(--mono)">${s.sem}</td>
-      <td><span class="badge ${attCls}">${s.avgAtt.toFixed(1)}%</span></td>
+      <td><span class="badge ${ac}">${s.avgAtt.toFixed(1)}%</span></td>
       <td style="font-family:var(--mono)">${s.avgMarks.toFixed(1)}</td>
       <td style="font-family:var(--mono);color:${s.backlogs>0?'#f87171':'#4ade80'}">${s.backlogs}</td>
-      <td><span class="badge ${statusCls}">${s.backlogs>0?'At Risk':'OK'}</span></td>
+      <td><span class="badge ${s.backlogs>0?'fail':'pass'}">${s.backlogs>0?'At Risk':'OK'}</span></td>
+      <td><button class="btn" style="padding:.25rem .6rem;font-size:11px" onclick="openReport('${s.id}')">📋 View</button></td>
     </tr>`;
   }).join('');
 }
 
-// ─── CSV LOADER ───────────────────────────────────────────────────────────
 function loadCSV(input){
-  const file = input.files[0];
-  if(!file) return;
-  Papa.parse(file,{header:true,skipEmptyLines:true,complete:res=>{
-    render(analyze(res.data));
-  }});
+  const file=input.files[0];if(!file)return;
+  Papa.parse(file,{header:true,skipEmptyLines:true,complete:res=>{render(analyze(res.data));}});
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded',()=>{
-  render(analyze(DEFAULT_DATA));
-});
+window.addEventListener('DOMContentLoaded',()=>{render(analyze(DEFAULT_DATA));});
 </script>
 </body>
 </html>
