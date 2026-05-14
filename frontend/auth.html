@@ -6,8 +6,8 @@
 <title>AttendanceIQ — Login</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-[data-theme="dark"]{--bg:#0F1117;--bg2:#161B27;--bg3:#1E2535;--border:#2A3347;--border2:#334060;--txt:#E8EDF5;--txt2:#8B97B5;--txt3:#5A6680;--input-bg:#1E2535;--input-border:#334060;}
-[data-theme="light"]{--bg:#F4F6FA;--bg2:#FFFFFF;--bg3:#F0F2F7;--border:#DDE1ED;--border2:#C5CCE0;--txt:#1A1F2E;--txt2:#4A5568;--txt3:#8896B0;--input-bg:#F0F2F7;--input-border:#C5CCE0;}
+[data-theme="dark"]{--bg:#0F1117;--bg2:#161B27;--bg3:#1E2535;--border:#2A3347;--border2:#334060;--txt:#E8EDF5;--txt2:#8B97B5;--txt3:#5A6680;--input-bg:#1E2535;--input-border:#334060;--modal-overlay:rgba(0,0,0,0.8);}
+[data-theme="light"]{--bg:#F4F6FA;--bg2:#FFFFFF;--bg3:#F0F2F7;--border:#DDE1ED;--border2:#C5CCE0;--txt:#1A1F2E;--txt2:#4A5568;--txt3:#8896B0;--input-bg:#F0F2F7;--input-border:#C5CCE0;--modal-overlay:rgba(0,0,0,0.45);}
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--blue:#3B82F6;--blue2:#1D4ED8;--green:#22C55E;--red:#EF4444;--purple:#8B5CF6;--font:'Sora',sans-serif;--mono:'JetBrains Mono',monospace;--radius:10px;--radius-lg:14px;--radius-xl:20px;}
 body{font-family:var(--font);background:var(--bg);color:var(--txt);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;transition:background .25s,color .25s;}
@@ -23,30 +23,54 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);min-height:10
 .tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;background:var(--bg3);border-radius:var(--radius);padding:4px;}
 .tab-btn{flex:1;padding:.5rem;border-radius:8px;font-size:13px;font-weight:500;border:none;background:transparent;color:var(--txt2);cursor:pointer;transition:.15s;font-family:var(--font);}
 .tab-btn.active{background:var(--bg2);color:var(--txt);box-shadow:0 1px 4px rgba(0,0,0,.15);}
-.panel{display:none;animation:fadeIn .2s ease}
-.panel.active{display:block}
+.panel{display:none;animation:fadeIn .2s ease}.panel.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .form-group{margin-bottom:1rem}
 .form-group label{display:block;font-size:12px;font-weight:500;color:var(--txt2);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.04em}
 .form-input{width:100%;padding:.65rem .9rem;border-radius:var(--radius);border:1px solid var(--input-border);background:var(--input-bg);color:var(--txt);font-family:var(--font);font-size:14px;transition:border-color .2s;outline:none;}
 .form-input:focus{border-color:var(--blue)}
 .form-input::placeholder{color:var(--txt3)}
-.role-select{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1rem;}
-.role-btn{padding:.6rem;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg3);color:var(--txt2);font-size:13px;font-weight:500;cursor:pointer;text-align:center;transition:.15s;font-family:var(--font);}
-.role-btn.selected{border-color:var(--blue);background:rgba(59,130,246,.1);color:var(--blue);}
-.submit-btn{width:100%;padding:.75rem;border-radius:var(--radius);border:none;background:var(--blue);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:.2s;margin-top:.5rem;}
-.submit-btn:hover{background:var(--blue2);transform:translateY(-1px)}
-.submit-btn:active{transform:translateY(0)}
-.divider{display:flex;align-items:center;gap:.75rem;margin:1rem 0;color:var(--txt3);font-size:12px}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.link-btn{background:none;border:none;color:var(--blue);font-size:13px;cursor:pointer;font-family:var(--font);text-decoration:underline;}
+.submit-btn{width:100%;padding:.75rem;border-radius:var(--radius);border:none;background:var(--blue);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:.2s;}
+.submit-btn:hover{background:var(--blue2);transform:translateY(-1px)}.submit-btn:active{transform:translateY(0)}
 .error-msg{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius);padding:.6rem .9rem;font-size:13px;color:#f87171;margin-bottom:1rem;display:none;}
 .success-msg{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:var(--radius);padding:.6rem .9rem;font-size:13px;color:#4ade80;margin-bottom:1rem;display:none;}
-.demo-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem 1rem;margin-top:1rem;font-size:12px;color:var(--txt2);}
-.demo-box strong{color:var(--txt);display:block;margin-bottom:.4rem}
-.demo-row{display:flex;justify-content:space-between;padding:.2rem 0;border-bottom:1px solid var(--border);}
-.demo-row:last-child{border:none}
+.info-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem 1rem;margin-top:1rem;font-size:12px;color:var(--txt2);line-height:1.6;}
+.info-box strong{color:var(--txt);display:block;margin-bottom:.3rem}
+.role-note{font-size:12px;color:var(--txt3);margin-top:.4rem;line-height:1.5}
 .theme-toggle{position:fixed;top:1rem;right:1rem;width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;z-index:10;}
+
+/* ── FIX 3: Forgot link — exact left, between password and login button ── */
+.password-footer{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;   /* left-aligned */
+  margin-top:.55rem;            /* gap below password input */
+  margin-bottom:1.1rem;         /* gap above login button */
+}
+.forgot-link{
+  background:none;border:none;
+  color:var(--blue);font-size:12px;font-weight:500;
+  cursor:pointer;font-family:var(--font);
+  padding:0;letter-spacing:.01em;
+  display:flex;align-items:center;gap:.3rem;
+}
+.forgot-link:hover{text-decoration:underline}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:500;background:var(--modal-overlay);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-xl);width:100%;max-width:420px;animation:modalIn .2s ease;overflow:hidden;}
+@keyframes modalIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-header h3{font-size:15px;font-weight:600;color:var(--txt)}
+.modal-close{width:30px;height:30px;border-radius:var(--radius);background:var(--bg3);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--txt2);transition:.15s;}
+.modal-close:hover{color:var(--red)}
+.modal-body{padding:1.4rem}
+.steps{display:flex;gap:0;margin-bottom:1.5rem;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);}
+.step{flex:1;padding:.45rem;text-align:center;font-size:11px;font-weight:600;color:var(--txt3);background:var(--bg3);transition:.2s;border-right:1px solid var(--border);}
+.step:last-child{border-right:none}
+.step.active{background:rgba(59,130,246,.12);color:var(--blue)}
+.step.done{background:rgba(34,197,94,.08);color:#4ade80}
 </style>
 </head>
 <body>
@@ -64,146 +88,172 @@ body{font-family:var(--font);background:var(--bg);color:var(--txt);min-height:10
     <div class="tabs">
       <button class="tab-btn active" onclick="showTab('login',this)">🔐 Login</button>
       <button class="tab-btn" onclick="showTab('register',this)">📝 Register</button>
-      <button class="tab-btn" onclick="showTab('forgot',this)">🔑 Forgot</button>
     </div>
 
     <!-- LOGIN PANEL -->
     <div class="panel active" id="loginPanel">
       <div class="error-msg" id="loginError"></div>
       <div class="success-msg" id="loginSuccess"></div>
+
       <div class="form-group">
         <label>Email Address</label>
         <input class="form-input" type="email" id="loginEmail" placeholder="you@pes.edu" autocomplete="email"/>
       </div>
+
       <div class="form-group">
         <label>Password</label>
-        <input class="form-input" type="password" id="loginPass" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()"/>
+        <input class="form-input" type="password" id="loginPass" placeholder="Enter password"
+          onkeydown="if(event.key==='Enter')doLogin()"/>
       </div>
+
+      <!-- FIX 3: Forgot link — left aligned, between password input and login button, with proper spacing -->
+      <div class="password-footer">
+        <button class="forgot-link" onclick="openForgotModal()">🔑 Forgot Password?</button>
+      </div>
+
       <button class="submit-btn" onclick="doLogin()">Login →</button>
-      <div class="demo-box">
-        <strong>🧪 Demo Credentials</strong>
-        <div class="demo-row"><span>Admin</span><span style="font-family:var(--mono)">admin@pes.edu / admin123</span></div>
-        <div class="demo-row"><span>Staff</span><span style="font-family:var(--mono)">staff@pes.edu / staff123</span></div>
-      </div>
     </div>
 
     <!-- REGISTER PANEL -->
     <div class="panel" id="registerPanel">
       <div class="error-msg" id="regError"></div>
       <div class="success-msg" id="regSuccess"></div>
-      <div class="form-group">
-        <label>Full Name</label>
-        <input class="form-input" type="text" id="regName" placeholder="Prof. Ravi Sharma"/>
-      </div>
-      <div class="form-group">
-        <label>Email Address</label>
-        <input class="form-input" type="email" id="regEmail" placeholder="you@pes.edu"/>
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input class="form-input" type="password" id="regPass" placeholder="Min 6 characters"/>
-      </div>
-      <div class="form-group">
-        <label>Confirm Password</label>
-        <input class="form-input" type="password" id="regPass2" placeholder="Re-enter password"/>
-      </div>
-      <div class="form-group">
-        <label>Role</label>
-        <div class="role-select">
-          <button class="role-btn selected" id="roleAdmin" onclick="selectRole('admin')">🛡️ Admin<br><span style="font-size:10px;font-weight:400">Full Access</span></button>
-          <button class="role-btn" id="roleStaff" onclick="selectRole('staff')">👁️ Staff<br><span style="font-size:10px;font-weight:400">View Only</span></button>
-        </div>
-      </div>
-      <button class="submit-btn" onclick="doRegister()">Create Account →</button>
-    </div>
 
-    <!-- FORGOT PASSWORD PANEL -->
-    <div class="panel" id="forgotPanel">
+      <div class="info-box">
+        <strong>ℹ️ Self-Registration</strong>
+        You can only register as <strong>Staff</strong> (view-only). Admin accounts are created exclusively by existing Admins from the dashboard.
+      </div>
+
+      <div style="margin-top:1.25rem">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input class="form-input" type="text" id="regName" placeholder="Prof. Ravi Sharma"/>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input class="form-input" type="email" id="regEmail" placeholder="you@pes.edu"/>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input class="form-input" type="password" id="regPass" placeholder="Min 6 characters"/>
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input class="form-input" type="password" id="regPass2" placeholder="Re-enter password"/>
+        </div>
+        <div class="form-group">
+          <label>Role</label>
+          <div style="padding:.65rem .9rem;border-radius:var(--radius);border:1px solid var(--input-border);background:var(--bg3);font-size:13px;color:var(--txt2);display:flex;align-items:center;gap:.5rem">
+            👁️ <strong style="color:var(--txt)">Staff</strong>
+            <span style="margin-left:.5rem;font-size:12px;color:var(--txt3)">— View-only access</span>
+          </div>
+          <p class="role-note">🛡️ Need Admin access? Contact your Admin — they can upgrade your account from User Management.</p>
+        </div>
+        <button class="submit-btn" onclick="doRegister()">Create Staff Account →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-overlay" id="forgotModal" onclick="closeForgotOutside(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3>🔑 Reset Password</h3>
+      <button class="modal-close" onclick="closeForgotModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="steps">
+        <div class="step active" id="step1Ind">1 · Find Account</div>
+        <div class="step" id="step2Ind">2 · Verify</div>
+        <div class="step" id="step3Ind">3 · New Password</div>
+      </div>
       <div class="error-msg" id="fgError"></div>
       <div class="success-msg" id="fgSuccess"></div>
-      <p style="font-size:13px;color:var(--txt2);margin-bottom:1.25rem;line-height:1.6">Enter your registered email. We'll show your security question to reset your password.</p>
-      <div class="form-group">
-        <label>Email Address</label>
-        <input class="form-input" type="email" id="fgEmail" placeholder="you@pes.edu"/>
-      </div>
-      <div id="fgStep2" style="display:none">
+
+      <!-- Step 1 -->
+      <div id="fgStep1">
+        <p style="font-size:13px;color:var(--txt2);margin-bottom:1rem;line-height:1.6">Enter your registered email to start the reset process.</p>
         <div class="form-group">
-          <label id="fgQuestion" style="color:var(--blue)">Security Question</label>
-          <input class="form-input" type="text" id="fgAnswer" placeholder="Your answer"/>
+          <label>Email Address</label>
+          <input class="form-input" type="email" id="fgEmail" placeholder="you@pes.edu" onkeydown="if(event.key==='Enter')fgNext1()"/>
+        </div>
+        <button class="submit-btn" onclick="fgNext1()">Continue →</button>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="fgStep2" style="display:none">
+        <div style="background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.15);border-radius:var(--radius);padding:.75rem 1rem;margin-bottom:1rem;font-size:13px;color:var(--txt2)">
+          🔐 <span id="fgQuestion" style="color:var(--txt);font-weight:500"></span>
+        </div>
+        <div class="form-group">
+          <label>Your Answer</label>
+          <input class="form-input" type="text" id="fgAnswer" placeholder="Type your answer..." onkeydown="if(event.key==='Enter')fgNext2()"/>
+        </div>
+        <div style="display:flex;gap:.5rem">
+          <button class="submit-btn" style="background:var(--bg3);color:var(--txt2);border:1px solid var(--border);flex:0 0 auto;width:auto;padding:.75rem 1.1rem" onclick="fgBack1()">← Back</button>
+          <button class="submit-btn" onclick="fgNext2()">Verify →</button>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div id="fgStep3" style="display:none">
+        <div style="background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.15);border-radius:var(--radius);padding:.65rem 1rem;margin-bottom:1rem;font-size:13px;color:#4ade80">
+          ✅ Identity verified! Set your new password below.
         </div>
         <div class="form-group">
           <label>New Password</label>
           <input class="form-input" type="password" id="fgNewPass" placeholder="Min 6 characters"/>
         </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input class="form-input" type="password" id="fgNewPass2" placeholder="Re-enter new password" onkeydown="if(event.key==='Enter')fgReset()"/>
+        </div>
+        <button class="submit-btn" onclick="fgReset()">Reset Password →</button>
       </div>
-      <button class="submit-btn" id="fgBtn" onclick="doForgot()">Find Account →</button>
     </div>
   </div>
 </div>
 
 <script>
-// ── SEED DEFAULT USERS ──────────────────────────────────
 function seedUsers(){
-  if(localStorage.getItem('aiq_users')) return;
-  const defaults=[
+  if(localStorage.getItem('aiq_users'))return;
+  localStorage.setItem('aiq_users',JSON.stringify([
     {name:'Admin User',email:'admin@pes.edu',pass:'admin123',role:'admin',secret:'What is your pet name?',answer:'tommy'},
     {name:'Staff User',email:'staff@pes.edu',pass:'staff123',role:'staff',secret:'What is your school name?',answer:'pes'},
-  ];
-  localStorage.setItem('aiq_users',JSON.stringify(defaults));
+  ]));
 }
 seedUsers();
-
 function getUsers(){return JSON.parse(localStorage.getItem('aiq_users')||'[]');}
 function saveUsers(u){localStorage.setItem('aiq_users',JSON.stringify(u));}
 
-// ── THEME ──────────────────────────────────────────────
 function toggleTheme(){
-  const h=document.documentElement;
-  const d=h.getAttribute('data-theme')==='dark';
+  const h=document.documentElement,d=h.getAttribute('data-theme')==='dark';
   h.setAttribute('data-theme',d?'light':'dark');
   document.getElementById('themeBtn').textContent=d?'☀️':'🌙';
 }
 
-// ── TABS ───────────────────────────────────────────────
-let selectedRole='admin';
 function showTab(tab,btn){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById(tab+'Panel').classList.add('active');
-  // reset messages
-  ['loginError','loginSuccess','regError','regSuccess','fgError','fgSuccess'].forEach(id=>{
-    const el=document.getElementById(id);if(el){el.style.display='none';}
-  });
-  document.getElementById('fgStep2').style.display='none';
-  document.getElementById('fgBtn').textContent='Find Account →';
+  ['loginError','loginSuccess','regError','regSuccess'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
 }
-
 function showMsg(id,msg,type='error'){
-  const el=document.getElementById(id);
-  el.textContent=msg;el.style.display='block';
+  const el=document.getElementById(id);el.textContent=msg;el.style.display='block';
   el.className=type==='error'?'error-msg':'success-msg';
 }
 
-// ── LOGIN ──────────────────────────────────────────────
 function doLogin(){
   const email=document.getElementById('loginEmail').value.trim().toLowerCase();
   const pass=document.getElementById('loginPass').value;
   if(!email||!pass){showMsg('loginError','Please fill all fields');return;}
-  const users=getUsers();
-  const user=users.find(u=>u.email===email&&u.pass===pass);
-  if(!user){showMsg('loginError','Invalid email or password');return;}
-  // Save session
+  const user=getUsers().find(u=>u.email===email&&u.pass===pass);
+  if(!user){showMsg('loginError','Invalid email or password.');return;}
   sessionStorage.setItem('aiq_session',JSON.stringify({name:user.name,email:user.email,role:user.role}));
   showMsg('loginSuccess','Login successful! Redirecting...','success');
-  setTimeout(()=>{window.location.href='index.html';},800);
-}
-
-// ── REGISTER ───────────────────────────────────────────
-function selectRole(role){
-  selectedRole=role;
-  document.getElementById('roleAdmin').classList.toggle('selected',role==='admin');
-  document.getElementById('roleStaff').classList.toggle('selected',role==='staff');
+  setTimeout(()=>{window.location.href='index.html';},700);
 }
 
 function doRegister(){
@@ -215,47 +265,67 @@ function doRegister(){
   if(pass.length<6){showMsg('regError','Password must be at least 6 characters');return;}
   if(pass!==pass2){showMsg('regError','Passwords do not match');return;}
   const users=getUsers();
-  if(users.find(u=>u.email===email)){showMsg('regError','Email already registered');return;}
-  users.push({name,email,pass,role:selectedRole,secret:'What is your favourite subject?',answer:'maths'});
+  if(users.find(u=>u.email===email)){showMsg('regError','This email is already registered');return;}
+  users.push({name,email,pass,role:'staff',secret:'What is your favourite subject?',answer:'maths'});
   saveUsers(users);
-  showMsg('regSuccess','Account created! You can now login.','success');
-  setTimeout(()=>{showTab('login',document.querySelector('.tab-btn'));},1500);
+  showMsg('regSuccess','Staff account created! You can now login.','success');
+  setTimeout(()=>{showTab('login',document.querySelector('.tab-btn'));},1600);
 }
 
-// ── FORGOT PASSWORD ────────────────────────────────────
-let fgUser=null;
-function doForgot(){
-  if(!fgUser){
-    const email=document.getElementById('fgEmail').value.trim().toLowerCase();
-    if(!email){showMsg('fgError','Enter your email');return;}
-    const users=getUsers();
-    fgUser=users.find(u=>u.email===email);
-    if(!fgUser){showMsg('fgError','No account found with this email');return;}
-    document.getElementById('fgQuestion').textContent='🔐 '+fgUser.secret;
-    document.getElementById('fgStep2').style.display='block';
-    document.getElementById('fgBtn').textContent='Reset Password →';
-    document.getElementById('fgError').style.display='none';
-  } else {
-    const answer=document.getElementById('fgAnswer').value.trim().toLowerCase();
-    const newPass=document.getElementById('fgNewPass').value;
-    if(!answer||!newPass){showMsg('fgError','Fill all fields');return;}
-    if(answer!==fgUser.answer){showMsg('fgError','Wrong answer to security question');return;}
-    if(newPass.length<6){showMsg('fgError','Password must be at least 6 characters');return;}
-    const users=getUsers();
-    const idx=users.findIndex(u=>u.email===fgUser.email);
-    users[idx].pass=newPass;
-    saveUsers(users);
-    fgUser=null;
-    document.getElementById('fgStep2').style.display='none';
-    document.getElementById('fgBtn').textContent='Find Account →';
-    document.getElementById('fgEmail').value='';
-    showMsg('fgSuccess','Password reset! You can now login.','success');
-  }
+let fgFoundUser=null;
+function openForgotModal(){
+  fgFoundUser=null;
+  ['fgEmail','fgAnswer','fgNewPass','fgNewPass2'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('fgError').style.display='none';
+  document.getElementById('fgSuccess').style.display='none';
+  setFgStep(1);
+  document.getElementById('forgotModal').classList.add('open');
 }
-
-// ── CHECK SESSION (redirect if already logged in) ──────
-const session=sessionStorage.getItem('aiq_session');
-if(session){window.location.href='index.html';}
+function closeForgotModal(){document.getElementById('forgotModal').classList.remove('open');}
+function closeForgotOutside(e){if(e.target.id==='forgotModal')closeForgotModal();}
+function setFgStep(n){
+  document.getElementById('fgStep1').style.display=n===1?'block':'none';
+  document.getElementById('fgStep2').style.display=n===2?'block':'none';
+  document.getElementById('fgStep3').style.display=n===3?'block':'none';
+  [1,2,3].forEach(i=>{
+    const el=document.getElementById('step'+i+'Ind');
+    el.className='step'+(i===n?' active':i<n?' done':'');
+  });
+  document.getElementById('fgError').style.display='none';
+  document.getElementById('fgSuccess').style.display='none';
+}
+function fgNext1(){
+  const email=document.getElementById('fgEmail').value.trim().toLowerCase();
+  if(!email){showMsg('fgError','Please enter your email');return;}
+  const user=getUsers().find(u=>u.email===email);
+  if(!user){showMsg('fgError','No account found with this email');return;}
+  fgFoundUser=user;
+  document.getElementById('fgQuestion').textContent=user.secret;
+  setFgStep(2);
+  setTimeout(()=>document.getElementById('fgAnswer').focus(),100);
+}
+function fgNext2(){
+  const answer=document.getElementById('fgAnswer').value.trim().toLowerCase();
+  if(!answer){showMsg('fgError','Please enter your answer');return;}
+  if(answer!==fgFoundUser.answer){showMsg('fgError','Incorrect answer. Try again.');return;}
+  setFgStep(3);
+  setTimeout(()=>document.getElementById('fgNewPass').focus(),100);
+}
+function fgBack1(){fgFoundUser=null;setFgStep(1);}
+function fgReset(){
+  const p=document.getElementById('fgNewPass').value;
+  const p2=document.getElementById('fgNewPass2').value;
+  if(!p||!p2){showMsg('fgError','Please fill both fields');return;}
+  if(p.length<6){showMsg('fgError','Password must be at least 6 characters');return;}
+  if(p!==p2){showMsg('fgError','Passwords do not match');return;}
+  const users=getUsers();
+  const idx=users.findIndex(u=>u.email===fgFoundUser.email);
+  users[idx].pass=p;saveUsers(users);
+  showMsg('fgSuccess','✅ Password reset successfully! You can now login.','success');
+  setTimeout(()=>{closeForgotModal();document.getElementById('loginEmail').value=fgFoundUser.email;document.getElementById('loginPass').value='';fgFoundUser=null;},1800);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeForgotModal();});
+if(sessionStorage.getItem('aiq_session')){window.location.href='index.html';}
 </script>
 </body>
 </html>
